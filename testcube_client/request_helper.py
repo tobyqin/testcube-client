@@ -23,8 +23,40 @@ def register_client(server_url):
 
     info = response.json()
     config['server'] = server_url
-    config['client'] = info['username']
-    config['token'] = info['password']
+    config.update(info)
     save_config()
 
     return info
+
+
+def api_url(endpoint):
+    return '{}api/{}/'.format(config['server'], endpoint)
+
+
+def api_auth():
+    return (config['client'], config['token'])
+
+
+def api_result(response):
+    if response.status_code not in (200, 201):
+        raise ValueError(response.text)
+
+    return response.json()
+
+
+def post_to(api_endpoint, data):
+    """create"""
+    response = requests.post(api_url(api_endpoint), data=data, auth=api_auth())
+    return api_result(response)
+
+
+def delete_to(api_endpoint, data):
+    """delete"""
+    response = requests.delete(api_url(api_endpoint), data=data, auth=api_auth())
+    return api_result(response)
+
+
+def put_to(api_endpoint, data):
+    """update"""
+    response = requests.put(api_url(api_endpoint), data=data, auth=api_auth())
+    return api_result(response)
