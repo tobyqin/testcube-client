@@ -1,17 +1,16 @@
-import requests
 import uuid
-import socket
-import getpass
+
+import requests
+
+from .settings import config, save_config
 
 
 def register_client(server_url):
     token = 'testcube_client_{}'.format(uuid.uuid4())
-    client_name = socket.gethostname()
-    username = getpass.getuser()
 
     data = {'token': token,
-            'client_name': client_name,
-            'client_user': username}
+            'client_name': config['host'],
+            'client_user': config['user']}
 
     assert isinstance(server_url, str)
 
@@ -20,6 +19,12 @@ def register_client(server_url):
 
     register_url = server_url + 'client-register'
     response = requests.post(register_url, data=data)
-
     assert response.status_code == 200, 'Failed to register client, response: ' + response.text
-    return response.json()
+
+    info = response.json()
+    config['server'] = server_url
+    config['client'] = info['username']
+    config['token'] = info['password']
+    save_config()
+
+    return info
