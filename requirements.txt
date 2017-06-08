@@ -5,3 +5,6 @@ coverage
 Sphinx
 cryptography
 PyYAML
+requests
+click
+pytest
