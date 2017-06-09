@@ -1,14 +1,12 @@
-import uuid
-
 import requests
 
 from .settings import config, save_config
 
 
 def register_client(server_url):
-    token = 'testcube_client_{}'.format(uuid.uuid4())
+    client_type = 'testcube_python_client'
 
-    data = {'token': token,
+    data = {'client_type': client_type,
             'client_name': config['host'],
             'client_user': config['user']}
 
