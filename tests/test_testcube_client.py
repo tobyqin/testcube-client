@@ -12,9 +12,11 @@ import sys
 import unittest
 from contextlib import contextmanager
 from click.testing import CliRunner
+from testcube_client.request_helper import *
 
 from testcube_client import testcube_client
 from testcube_client import cli
+from random import randint
 
 server = 'http://127.0.0.1:8000'
 
@@ -27,10 +29,20 @@ class TestCases(unittest.TestCase):
         pass
 
     def test_register_client(self):
-        from testcube_client.request_helper import register_client
         register_info = register_client(server)
         print(register_info)
-        assert register_info['username'] is not None
+        assert register_info['client'] is not None
+        assert register_info['token'] is not None
+
+    def test_basic_api_post(self):
+        api = 'configurations'
+        data = {'key': 'test', 'value': randint(1, 100)}
+        result = post_to(api, data)
+        print(result)
+
+        data = {'key': 'test', 'value': 'hello', 'id': result['id']}
+        result = put_to(api, data)
+        print(result)
 
     def test_command_line_interface(self):
         runner = CliRunner()
