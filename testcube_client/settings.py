@@ -13,9 +13,9 @@ config_file = join(home_dir, '.testcube_client.json')
 def load_config():
     if exists(config_file):
         with open(config_file) as f:
-            c = json.loads(f.read())
-            for k, v in c.items():
-                config[k] = v
+            content = f.read()
+            if content:
+                config.update(json.loads(content))
 
     config['host'] = socket.gethostname()
     config['user'] = getpass.getuser()
@@ -23,11 +23,8 @@ def load_config():
 
 
 def save_config():
-    if exists(config_file):
-        print("Warning: overwrite existed config file: {}".format(config_file))
-
     with open(config_file, 'w') as f:
-        f.write(json.dumps(config))
+        f.write(json.dumps(config, indent=4))
 
 
 load_config()

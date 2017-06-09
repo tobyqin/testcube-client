@@ -14,7 +14,7 @@ from contextlib import contextmanager
 from click.testing import CliRunner
 from testcube_client.request_helper import *
 
-from testcube_client import testcube_client
+from testcube_client import testcube_client as client
 from testcube_client import cli
 from random import randint
 
@@ -37,11 +37,11 @@ class TestCases(unittest.TestCase):
     def test_basic_api_post(self):
         api = 'configurations'
         data = {'key': 'test', 'value': randint(1, 100)}
-        result = post_to(api, data)
+        result = client.post(api, data)
         print(result)
 
         data = {'key': 'test', 'value': 'hello', 'id': result['id']}
-        result = put_to(api, data)
+        result = client.put(api, data)
         print(result)
 
     def test_command_line_interface(self):
