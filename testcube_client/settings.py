@@ -2,6 +2,7 @@ import getpass
 import json
 import socket
 from os.path import exists, join, expanduser
+import platform
 
 config = {}
 
@@ -18,6 +19,7 @@ def load_config():
 
     config['host'] = socket.gethostname()
     config['user'] = getpass.getuser()
+    config['platform'] = '{} {}'.format(platform.platform(), platform.machine())
 
 
 def save_config():

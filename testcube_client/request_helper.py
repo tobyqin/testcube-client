@@ -8,7 +8,8 @@ def register_client(server_url):
 
     data = {'client_type': client_type,
             'client_name': config['host'],
-            'client_user': config['user']}
+            'client_user': config['user'],
+            'platform': config['platform']}
 
     assert isinstance(server_url, str)
 
