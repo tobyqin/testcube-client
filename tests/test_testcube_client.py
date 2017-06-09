@@ -35,8 +35,8 @@ class TestCases(unittest.TestCase):
         assert register_info['token'] is not None
 
     def test_basic_api_post(self):
-        api = 'configurations'
-        data = {'key': 'test', 'value': randint(1, 100)}
+        api = 'projects'
+        data = {'name': 'EggPlant', 'owner': 'toby.qin'}
         result = client.post(api, data)
         print(result)
 
