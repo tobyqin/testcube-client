@@ -1,14 +1,26 @@
-def run(name, files, **kwargs):
+from .settings import API, config
+
+
+def run(result_xml_pattern, name=None, **kwargs):
     """One step to save a run with multiple xml files."""
-    pass
+    team = kwargs.pop('team')
+    product = kwargs.pop('product')
+    version = kwargs.pop('version', None)
+    start_run(team=team, product=product, version=version, name=name, **kwargs)
+    finish_run(config['current_run']['url'], result_xml_pattern)
 
 
-def start_run(name, team, product, version=None):
+def start_run(team, product, version=None, name=None, **kwargs):
     """Will save current run id in config and print out."""
-    pass
+    if not name:
+        name = 'Tests running on {}'.format(config['host'])
+
+    team = get_or_create_team(team)
+    product = get_or_create_product(product, version)
 
 
-def finish_run(run_id, files):
+
+def finish_run(run_url, result_xml_pattern):
     """Follow up step to save run info after starting a run."""
     pass
 

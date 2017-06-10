@@ -1,6 +1,6 @@
 import requests
 
-from .settings import config, save_config
+from .settings import config, save_config, API
 
 
 def register_client(server_url):
@@ -29,6 +29,9 @@ def register_client(server_url):
 
 
 def api_url(endpoint):
+    if 'server' not in config:
+        raise EnvironmentError('Must register a testcube server!')
+
     return '{}api/{}/'.format(config['server'], endpoint)
 
 

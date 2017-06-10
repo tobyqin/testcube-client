@@ -28,3 +28,15 @@ def save_config():
 
 
 load_config()
+
+
+class API:
+    team = 'teams'
+    product = 'products'
+    run = 'runs'
+    result = 'results'
+    testcase = 'cases'
+    client = 'clients'
+    issue = 'issues'
+    analysis = 'analysis'
+    error = 'errors'

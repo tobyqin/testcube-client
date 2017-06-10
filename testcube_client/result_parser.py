@@ -2,7 +2,8 @@ from codecs import open
 
 import glob2
 
-from .xunitparser import parse
+from .utils.xunitparser import parse
+from os.path import realpath
 
 
 def get_files(pattern):
@@ -19,11 +20,11 @@ def get_files(pattern):
     :return:matched files
     """
 
-    return glob2.glob(pattern)
+    return [realpath(p) for p in glob2.glob(pattern)]
 
 
 def open_xml(file):
-    return open(file)
+    return open(file, encoding='utf-8')
 
 
 def get_suite(xml):
@@ -31,6 +32,11 @@ def get_suite(xml):
     return suite
 
 
-def get_result(xml):
-    _, result = parse(open_xml(xml))
-    return result
+def get_results(xml_files):
+    """return a list of test results for multiple xml files"""
+    results = []
+    for xml in xml_files:
+        _, result = parse(open_xml(xml))
+        results.extend(getattr(result, 'tests'))
+
+    return results
