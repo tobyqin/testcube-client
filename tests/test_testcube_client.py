@@ -76,11 +76,18 @@ class TestCases(unittest.TestCase):
         assert teams['count'] == 0
 
         dog_teams = client.get(api, params={'name': 'Dog'})['results']
+        deleted_team = egg_teams[0]
+
         for team in dog_teams:
             client.delete(team['url'])
 
         teams = client.get(api, params={'name': 'Dog'})
         assert teams['count'] == 0
+
+        try:
+            client.delete(deleted_team['url'])
+        except ValueError as e:
+            print('cannot deleted twice! ' + str(e))
 
     def test_command_line_interface(self):
         runner = CliRunner()

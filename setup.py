@@ -11,17 +11,15 @@ with open('HISTORY.rst') as history_file:
 
 requirements = [
     'Click>=6.0',
-    # TODO: put package requirements here
-]
-
-test_requirements = [
-    # TODO: put package test requirements here
+    'requests',
+    'xunitparser',
+    'glob2'
 ]
 
 setup(
-    name='testcube_client',
-    version='0.1.0',
-    description="A Python client for testcube.",
+    name='testcube-client',
+    version='0.1.1',
+    description="A Python client for testcube. (https://github.com/tobyqin/testcube)",
     long_description=readme + '\n\n' + history,
     author="Toby Qin",
     author_email='toby.qin@live.com',
@@ -30,7 +28,7 @@ setup(
         'testcube_client',
     ],
     package_dir={'testcube_client':
-                 'testcube_client'},
+                     'testcube_client'},
     entry_points={
         'console_scripts': [
             'testcube_client=testcube_client.cli:main'
@@ -40,20 +38,13 @@ setup(
     install_requires=requirements,
     license="MIT license",
     zip_safe=False,
-    keywords='testcube_client',
+    keywords='testcube, testcube-client, test platform, test client',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
-        "Programming Language :: Python :: 2",
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
-    ],
-    test_suite='tests',
-    tests_require=test_requirements
+    ]
 )
