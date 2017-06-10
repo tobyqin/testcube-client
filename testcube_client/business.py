@@ -1,4 +1,6 @@
-from .settings import API, config
+import testcube_client.testcube_client as client
+from testcube_client.result_parser import get_results, get_files
+from testcube_client.settings import API, config
 
 
 def run(result_xml_pattern, name=None, **kwargs):
@@ -17,16 +19,34 @@ def start_run(team, product, version=None, name=None, **kwargs):
 
     team = get_or_create_team(team)
     product = get_or_create_product(product, version)
+    start_by = config['user']
+    owner = kwargs.pop('owner', start_by)
 
+    data = {'team': team, 'product': product, 'start_by': start_by, 'owner': owner}
+    run = client.post(API.run, data=data)
+    config['current_run'] = run
+    print('Start new run: {}'.format(run['url']))
 
 
 def finish_run(run_url, result_xml_pattern):
     """Follow up step to save run info after starting a run."""
-    pass
+    files = get_files(result_xml_pattern)
+    results, info = get_results(files)
+    for result in results:
+        update_or_create_result(run_url=run_url, result=result)
+
+    data = {'start_time': info['start_time'], 'end_time': info['end_time']}
+    client.put(run_url, data)
 
 
 def get_or_create_team(name):
-    pass
+    data = {'name': name}
+    found = client.get(API.team, data)
+
+    if found['count']:
+        return found['results'][0]['url']
+    else:
+        return client.post(API.team, data)['url']
 
 
 def update_team(name, owner):
@@ -34,16 +54,75 @@ def update_team(name, owner):
 
 
 def get_or_create_product(name, version=None):
-    pass
+    data = {'name': name}
+
+    if version:
+        data['version'] = version
+
+    found = client.get(API.product, data)
+
+    if found['count']:
+        return found['results'][0]['url']
+    else:
+        return client.post(API.product, data)['url']
 
 
 def add_product(name, version):
     pass
 
 
-def get_or_create_testcase(name, team, product):
-    pass
+def get_or_create_testcase(name, full_name, team_url, product_url):
+    data = {'name': name, 'full_name': full_name}
+
+    found = client.get(API.testcase, data)
+
+    if found['count']:
+        for tc in found['results']:
+            if tc['team'] == team_url and tc['product'] == product_url:
+                return tc['url']
+
+    data['created_by'] = config['user']
+    data['team'] = team_url
+    data['product'] = product_url
+    return client.post(API.testcase, data)['url']
 
 
-def update_or_create_result(run_id, result):
-    pass
+def get_or_create_client(name=None):
+    if not name:
+        name = config['host']
+
+    data = {'name': name}
+
+    found = client.get(API.client, data)
+
+    if found['count']:
+        return found['results'][0]['url']
+    else:
+        return client.post(API.client, data)['url']
+
+
+def update_or_create_result(run, result):
+    name = result.methodname
+    fullname = '{}.{}'.format(result.classname, result.methodname)
+
+    team = client.get_obj(run['team'])
+    product = client.get_obj(run['product'])
+
+    testcase_url = get_or_create_testcase(name, fullname, team['url'], product['url'])
+    client_url = get_or_create_client()
+    duration = result.time.total_seconds()
+    outcome = 0
+    stdout = result.stdout
+    stderr = result.stderr
+
+    if result.result == 'failure':
+        outcome = 1
+        message = result.message
+        stacktrace = result.alltext
+
+    data = {'test_run': run['url'], 'testcase': testcase_url,
+            'duration': duration, 'outcome': outcome,
+            'assigned_to': run['owner'], 'test_client': client_url}
+
+    r = client.post(API.result, data=data)
+    return r['url']

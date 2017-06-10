@@ -1,9 +1,10 @@
 import unittest
-from os.path import dirname, join, curdir, realpath
-from os import chdir
 from codecs import open
-from testcube_client.utils.xunitparser import parse
+from os import chdir
+from os.path import dirname, join, curdir, realpath
+
 from testcube_client.result_parser import get_files, get_results
+from testcube_client.utils.xunitparser import parse
 
 test_dir = dirname(dirname(__file__))
 xunit_dir = join(test_dir, 'xunits')
@@ -66,10 +67,15 @@ class TestCases(unittest.TestCase):
 
     def test_parse_multiple_xml(self):
         files = get_files('../**/re*.xml')
-        results = get_results(files)
+        results, info = get_results(files)
         print(results)
         assert len(results) == 3
+        print(info)
+        assert len(info['files']) == 1
+        assert info['duration'] == 0.069
 
         files = get_files('../**/*.xml')
-        results = get_results(files)
+        results, info = get_results(files)
         assert len(results) == 10
+        print(info['start_time'], info['end_time'])
+        assert info['start_time'] < info['end_time']

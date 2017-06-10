@@ -23,7 +23,7 @@ class TestResult(unittest.TestResult):
         self.tests.append(test)
 
     def addSuccess(self, test):
-        if not hasattr(self, 'pass'):
+        if not hasattr(self, 'passed'):
             self.passed = []
 
         self.passed.append(test)
@@ -164,7 +164,8 @@ class Parser(object):
 
         tr = ts.run(self.TR_CLASS())
 
-        tr.time = to_timedelta(root.attrib.get('time'))
+        ts.time = float(root.attrib.get('time', 0))
+        tr.time = to_timedelta(ts.time)
 
         # check totals if they are in the root XML element
         if 'errors' in root.attrib:

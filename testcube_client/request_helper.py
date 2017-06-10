@@ -1,6 +1,6 @@
 import requests
 
-from .settings import config, save_config, API
+from .settings import config, save_config
 
 
 def register_client(server_url):
@@ -41,7 +41,9 @@ def api_auth():
 
 def api_result(response, as_json=True):
     if response.status_code not in (200, 201, 204, 205):
-        raise ValueError(response.text)
+        raise ValueError('[{} {}]: {}'.format(response.request.method,
+                                              response.url,
+                                              response.text))
 
     if as_json:
         return response.json()

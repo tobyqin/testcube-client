@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 import requests
+
 from .request_helper import api_auth, api_result, api_url
 
 
-def get(api_endpoint, params):
+def get(api_endpoint, params=None):
     """get, params is a dict which will be converted to query string."""
-    response = requests.get(api_url(api_endpoint), params=params, auth=api_auth())
+    response = requests.get(api_url(api_endpoint), params=params)
+    return api_result(response)
+
+
+def get_obj(obj_url):
+    response = requests.get(obj_url)
     return api_result(response)
 
 
