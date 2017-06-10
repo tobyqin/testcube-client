@@ -1,4 +1,4 @@
-bumpversion
+bumpversion==0.5.3
 flake8
 tox
 coverage
