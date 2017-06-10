@@ -1,11 +1,38 @@
-<?xml version="1.0" encoding="utf-8"?><testsuite errors="0" failures="0" name="pytest" skips="0" tests="7" time="23.275"><testcase classname="tests.utility_tests" file="tests\utility_tests.py" line="9" name="test_get_browser" time="13.003135442733765"></testcase><testcase classname="tests.utility_tests" file="tests\utility_tests.py" line="28" name="test_wait_for" time="4.003885746002197"><system-out>2017-06-08 11:43:42,431 INFO   : Timeout to wait for &apos;not_ok()&apos; in 2 seconds. [SystemError]: so bad!
-</system-out></testcase><testcase classname="tests.utility_tests" file="tests\utility_tests.py" line="41" name="test_try_wait_for" time="4.003885507583618"><system-out>2017-06-08 11:43:44,434 DEBUG  : Try wait for &apos;not_ok()&apos;. [SystemError]: so bad!
-2017-06-08 11:43:45,936 DEBUG  : Try wait for &apos;not_ok()&apos;. [SystemError]: so bad!
-2017-06-08 11:43:46,436 INFO   : Failed to wait for &apos;not_ok()&apos;, return False.
-</system-out></testcase><testcase classname="tests.utility_tests" file="tests\utility_tests.py" line="50" name="test_retry_for_error" time="2.0024423599243164"><system-out>2017-06-08 11:43:46,438 INFO   : Retry for RuntimeError for 1 time...
-2017-06-08 11:43:46,938 INFO   : Retry for NameError for 1 time...
-2017-06-08 11:43:47,439 INFO   : Retry for RuntimeError for 2 time...
-2017-06-08 11:43:47,939 INFO   : Retry for RuntimeError for 1 time...
-</system-out></testcase><testcase classname="tests.utility_tests" file="tests\utility_tests.py" line="90" name="test_read_write_csv_list" time="0.014010190963745117"><system-out>toby qin
-</system-out></testcase><testcase classname="tests.utility_tests" file="tests\utility_tests.py" line="116" name="test_read_write_csv_dict" time="0.004003047943115234"><system-out>{&apos;first&apos;: &apos;toby&apos;, &apos;last&apos;: &apos;qin&apos;}
-</system-out></testcase><testcase classname="tests.utility_tests" file="tests\utility_tests.py" line="140" name="test_read_text" time="0.0020012855529785156"></testcase></testsuite>
+<?xml version="1.0" encoding="utf-8"?>
+<testsuite errors="0" failures="0" name="pytest" skips="0" tests="7" time="23.275">
+    <testcase classname="tests.utility_tests" file="tests\utility_tests.py" line="9" name="test_get_browser"
+              time="13.003135442733765"></testcase>
+    <testcase classname="tests.utility_tests" file="tests\utility_tests.py" line="28" name="test_wait_for"
+              time="4.003885746002197">
+        <system-out>2017-06-08 11:43:42,431 INFO : Timeout to wait for &apos;not_ok()&apos; in 2 seconds. [SystemError]:
+            so bad!
+        </system-out>
+    </testcase>
+    <testcase classname="tests.utility_tests" file="tests\utility_tests.py" line="41" name="test_try_wait_for"
+              time="4.003885507583618">
+        <system-out>2017-06-08 11:43:44,434 DEBUG : Try wait for &apos;not_ok()&apos;. [SystemError]: so bad!
+            2017-06-08 11:43:45,936 DEBUG : Try wait for &apos;not_ok()&apos;. [SystemError]: so bad!
+            2017-06-08 11:43:46,436 INFO : Failed to wait for &apos;not_ok()&apos;, return False.
+        </system-out>
+    </testcase>
+    <testcase classname="tests.utility_tests" file="tests\utility_tests.py" line="50" name="test_retry_for_error"
+              time="2.0024423599243164">
+        <system-out>2017-06-08 11:43:46,438 INFO : Retry for RuntimeError for 1 time...
+            2017-06-08 11:43:46,938 INFO : Retry for NameError for 1 time...
+            2017-06-08 11:43:47,439 INFO : Retry for RuntimeError for 2 time...
+            2017-06-08 11:43:47,939 INFO : Retry for RuntimeError for 1 time...
+        </system-out>
+    </testcase>
+    <testcase classname="tests.utility_tests" file="tests\utility_tests.py" line="90" name="test_read_write_csv_list"
+              time="0.014010190963745117">
+        <system-out>toby qin
+        </system-out>
+    </testcase>
+    <testcase classname="tests.utility_tests" file="tests\utility_tests.py" line="116" name="test_read_write_csv_dict"
+              time="0.004003047943115234">
+        <system-out>{&apos;first&apos;: &apos;toby&apos;, &apos;last&apos;: &apos;qin&apos;}
+        </system-out>
+    </testcase>
+    <testcase classname="tests.utility_tests" file="tests\utility_tests.py" line="140" name="test_read_text"
+              time="0.0020012855529785156"></testcase>
+</testsuite>
