@@ -1,9 +1,8 @@
 import unittest
-import os
 from os.path import dirname, join
 import xunitparser
 
-test_dir = dirname(__file__)
+test_dir = dirname(dirname(__file__))
 xunit_dir = join(test_dir, 'xunits')
 xunit_xml = join(xunit_dir, 'results.xml')
 

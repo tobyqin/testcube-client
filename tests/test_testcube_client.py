@@ -5,7 +5,7 @@
 test_testcube_client
 ----------------------------------
 
-Tests for `testcube_client` module.
+Tests for `testcube_client` module. Requires a testcube server.
 """
 
 import sys
