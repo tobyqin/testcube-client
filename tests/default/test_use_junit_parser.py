@@ -20,5 +20,17 @@ class TestCases(unittest.TestCase):
         assert isinstance(suite, unittest.TestSuite)
         assert isinstance(result, unittest.TestResult)
 
-        print(suite)
-        print(result)
+        passed = result.passed[0]
+        print(passed)
+
+        skipped = result.skipped[0]
+        print(skipped)
+
+        failure = result.failures[0]
+        print(failure)
+
+        error = result.errors
+        assert len(error) == 0
+
+        results = result.tests
+        assert len(results) == 3

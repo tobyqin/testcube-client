@@ -16,6 +16,12 @@ def to_timedelta(val):
 
 
 class TestResult(unittest.TestResult):
+    def addResult(self, test):
+        if not hasattr(self, 'tests'):
+            self.tests = []
+
+        self.tests.append(test)
+
     def addSuccess(self, test):
         if not hasattr(self, 'pass'):
             self.passed = []
@@ -59,6 +65,8 @@ class TestCase(unittest.TestCase):
         tr = tr or self.TR_CLASS()
 
         tr.startTest(self)
+        tr.addResult(self)
+
         if self.result == 'success':
             tr.addSuccess(self)
         elif self.result == 'skipped':
