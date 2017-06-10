@@ -36,8 +36,11 @@ def api_auth():
     return (config['client'], config['token'])
 
 
-def api_result(response):
-    if response.status_code not in (200, 201):
+def api_result(response, as_json=True):
+    if response.status_code not in (200, 201, 204, 205):
         raise ValueError(response.text)
 
-    return response.json()
+    if as_json:
+        return response.json()
+    else:
+        return response.text

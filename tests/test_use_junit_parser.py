@@ -20,5 +20,5 @@ class TestCases(unittest.TestCase):
         assert isinstance(suite, unittest.TestSuite)
         assert isinstance(result, unittest.TestResult)
 
-        print suite
-        print result
+        print(suite)
+        print(result)

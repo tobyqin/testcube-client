@@ -34,15 +34,53 @@ class TestCases(unittest.TestCase):
         assert register_info['client'] is not None
         assert register_info['token'] is not None
 
-    def test_basic_api_post(self):
-        api = 'projects'
+    def test_api_post(self):
+        api = 'teams'
         data = {'name': 'EggPlant', 'owner': 'toby.qin'}
         result = client.post(api, data)
         print(result)
+        assert result['name'] == data['name']
+        assert result['owner'] == data['owner']
 
-        data = {'key': 'test', 'value': 'hello', 'id': result['id']}
-        result = client.put(api, data)
+    def test_api_get(self):
+        self.test_api_post()
+
+        api = 'teams'
+        result = client.get(api, params={'name': 'EggPlant'})
         print(result)
+        assert result['count'] >= 1
+        assert isinstance(result['results'], list)
+        return result
+
+    def test_api_put(self):
+        api = 'teams'
+        teams = self.test_api_get()['results']
+
+        for team in teams:
+            team_url = team['url']
+            print('update team: {}'.format(team_url))
+            client.put(team_url, data={'name': 'Dog'})
+
+        new_teams = client.get(api, params={'name': 'Dog'})['results']
+        for team in new_teams:
+            print(team)
+            assert team['name'] == 'Dog'
+
+    def test_api_delete(self):
+        api = 'teams'
+        egg_teams = self.test_api_get()['results']
+        for team in egg_teams:
+            client.delete(team['url'])
+
+        teams = client.get(api, params={'name': 'EggPlant'})
+        assert teams['count'] == 0
+
+        dog_teams = client.get(api, params={'name': 'Dog'})['results']
+        for team in dog_teams:
+            client.delete(team['url'])
+
+        teams = client.get(api, params={'name': 'Dog'})
+        assert teams['count'] == 0
 
     def test_command_line_interface(self):
         runner = CliRunner()
