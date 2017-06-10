@@ -12,7 +12,6 @@ with open('HISTORY.rst') as history_file:
 requirements = [
     'Click>=6.0',
     'requests',
-    'xunitparser',
     'glob2'
 ]
 

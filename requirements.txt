@@ -8,5 +8,4 @@ PyYAML
 requests
 click
 pytest
-xunitparser
 glob2

@@ -1,6 +1,7 @@
 import unittest
 from os.path import dirname, join
-import xunitparser
+from codecs import open
+from testcube_client.xunitparser import parse
 
 test_dir = dirname(dirname(__file__))
 xunit_dir = join(test_dir, 'xunits')
@@ -15,7 +16,7 @@ class TestCases(unittest.TestCase):
         pass
 
     def test_basic_parser(self):
-        suite, result = xunitparser.parse(open(xunit_xml))
+        suite, result = parse(open(xunit_xml, encoding='utf-8'))
         assert isinstance(suite, unittest.TestSuite)
         assert isinstance(result, unittest.TestResult)
 

@@ -1,10 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?><testsuite errors="0" failures="1" name="pytest" skips="1" tests="3" time="0.069"><testcase classname="tests.xunits.my.SimpleTest" file="tests\xunits\my.py" line="20" name="test_fail" time="0.0005130767822265625"><failure message="AssertionError: 11 != 10">self = &lt;my.SimpleTest testMethod=test_fail&gt;
+<?xml version="1.0" encoding="utf-8"?>
+<testsuite errors="0" failures="1" name="pytest" skips="1" tests="3" time="0.069">
+    <testcase classname="tests.xunits.my.SimpleTest" file="tests\xunits\my.py" line="20" name="test_fail"
+              time="0.0005130767822265625">
+        <failure message="AssertionError: 11 != 10">self = &lt;my.SimpleTest testMethod=test_fail&gt;
 
-    def test_fail(self):
-&gt;       self.assertEqual(11, 7 + 3)
-E       AssertionError: 11 != 10
+            def test_fail(self):
+            &gt; self.assertEqual(11, 7 + 3)
+            E AssertionError: 11 != 10
 
-my.py:22: AssertionError</failure></testcase><testcase classname="tests.xunits.my.SimpleTest" file="tests\xunits\my.py" line="14" name="test_pass" time="0.0010004043579101562"><system-out>hello, test 1
-hello, test 中
-hello, test 哈哈
-</system-out></testcase><testcase classname="tests.xunits.my.SimpleTest" file="tests\xunits\my.py" line="9" name="test_skipped" time="0.0"><skipped message="demonstrating skipping" type="pytest.skip">tests\xunits\my.py:9: &lt;py._xmlgen.raw object at 0x04092FB0&gt;</skipped></testcase></testsuite>
+            my.py:22: AssertionError
+        </failure>
+    </testcase>
+    <testcase classname="tests.xunits.my.SimpleTest" file="tests\xunits\my.py" line="14" name="test_pass"
+              time="0.0010004043579101562">
+        <system-out>hello, test 1
+            hello, test 中
+            hello, test 哈哈
+        </system-out>
+    </testcase>
+    <testcase classname="tests.xunits.my.SimpleTest" file="tests\xunits\my.py" line="9" name="test_skipped" time="0.0">
+        <skipped message="demonstrating skipping" type="pytest.skip">tests\xunits\my.py:9: &lt;py._xmlgen.raw object at
+            0x04092FB0&gt;</skipped>
+    </testcase>
+</testsuite>
