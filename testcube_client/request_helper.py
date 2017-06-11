@@ -1,6 +1,6 @@
 import requests
 
-from .settings import config, save_config
+from testcube_client.settings import config, save_config
 
 
 def register_client(server_url):
