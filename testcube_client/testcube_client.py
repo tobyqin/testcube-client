@@ -21,6 +21,12 @@ def post(api_endpoint, data):
     return api_result(response)
 
 
+def patch(obj_url, data):
+    """patch an object with partial data"""
+    response = requests.patch(obj_url, data=data, auth=api_auth())
+    return api_result(response)
+
+
 def delete(object_url):
     """delete to object instance"""
     response = requests.delete(object_url, auth=api_auth())
