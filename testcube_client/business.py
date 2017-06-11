@@ -9,7 +9,7 @@ def run(result_xml_pattern, name=None, **kwargs):
     product = kwargs.pop('product')
     version = kwargs.pop('version', None)
     start_run(team=team, product=product, version=version, name=name, **kwargs)
-    finish_run(config['current_run']['url'], result_xml_pattern)
+    finish_run(result_xml_pattern)
 
 
 def start_run(team, product, version=None, name=None, **kwargs):
@@ -28,15 +28,21 @@ def start_run(team, product, version=None, name=None, **kwargs):
     print('Start new run: {}'.format(run['url']))
 
 
-def finish_run(run_url, result_xml_pattern):
+def finish_run(result_xml_pattern, run=None):
     """Follow up step to save run info after starting a run."""
     files = get_files(result_xml_pattern)
     results, info = get_results(files)
+
+    if not run:
+        assert 'current_run' in config, 'Seems like you never start a run!'
+        run = config['current_run']
+
     for result in results:
-        update_or_create_result(run_url=run_url, result=result)
+        update_or_create_result(run, result=result)
 
     data = {'start_time': info['start_time'], 'end_time': info['end_time']}
-    client.put(run_url, data)
+    client.put(run['url'], data)
+    print('Finish run: {}'.format(run['url']))
 
 
 def get_or_create_team(name):
