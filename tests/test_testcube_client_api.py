@@ -8,15 +8,13 @@ test_testcube_client
 Tests for `testcube_client` module. Requires a testcube server.
 """
 
-import sys
 import unittest
-from contextlib import contextmanager
-from click.testing import CliRunner
-from testcube_client.request_helper import *
 
-from testcube_client import testcube_client as client
+from click.testing import CliRunner
+
 from testcube_client import cli
-from random import randint
+from testcube_client import testcube_client as client
+from testcube_client.request_helper import *
 
 server = 'http://127.0.0.1:8000'
 
@@ -51,6 +49,12 @@ class TestCases(unittest.TestCase):
         assert result['count'] >= 1
         assert isinstance(result['results'], list)
         return result
+
+    def test_api_get_object(self):
+        result = self.test_api_get()
+        first = result['results'][0]
+        get_first = client.get_obj(first['url'])
+        assert first == get_first
 
     def test_api_put(self):
         api = 'teams'

@@ -41,5 +41,7 @@ def get_results(xml_files):
         results.extend(getattr(result, 'tests'))
 
     info['start_time'] = info['end_time'].shift(seconds=-info['duration'])
+    info['start_time'] = info['start_time'].format()
+    info['end_time'] = info['end_time'].format()
 
     return results, info
