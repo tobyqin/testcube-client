@@ -3,7 +3,7 @@ from os import chdir
 from os.path import dirname, join, curdir, realpath
 
 from testcube_client.result_parser import get_files, get_results
-from testcube_client.utils.xunitparser import parse
+from testcube_client.xunitparser import parse
 
 test_dir = dirname(dirname(__file__))
 xunit_dir = join(test_dir, 'xunits')
