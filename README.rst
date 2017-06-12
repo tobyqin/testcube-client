@@ -56,7 +56,7 @@ one is call ``--start-run`` at the beginning and call ``--finish--run`` when it 
 
 In this way, TestCube will record the **exact** ``start_time`` and ``end_time`` for the run.
 
-Another choice is use one time ``--run`` command to upload test results.::
+Another choice is ``--run`` command to upload test results at one time.::
 
   # put this command at the end of a run
   testcube-client --run -name "smoke tests for testcube" --team XPower --product TestCube --product-version v1.0 --xunit **/smoke*.xml
@@ -78,6 +78,7 @@ The optional arguments::
   -start, --start-run   Start a run, require team, product and a name.
   -finish, --finish-run
                         Finish a run, require xunit files.
+
   -x XUNIT_FILES, --xunit-files XUNIT_FILES
                         Specify the xunit xml results, e.g "**/result*.xml"
   -n NAME, --name NAME  Specify the run name.
