@@ -38,28 +38,31 @@ Install testcube-client via pip is the most easy way.
 Register to Server
 ~~~~~~~~~~~~~~~~~~
 
-You should have a .. _TestCuber: https://github.com/tobyqin/testcube server deployed, then run `--register` command.::
+You should have a TestCube_ server deployed, then run ``--register`` command.::
 
   testcube-client register http://testcube-server:8000
 
-Submit Run Info
-~~~~~~~~~~~~~~~
+Submit Run Results
+~~~~~~~~~~~~~~~~~~
 
-You have 2 ways to upload test results to TestCube, one is call `--start-run` at the beginning and call
-`--finish--run` once it finished.::
+Once you had register to the server, you have 2 ways to upload test results,
+one is call ``--start-run`` at the beginning and call ``--finish--run`` when it finished.::
 
-  # add --start-run before run started
+  # call --start-run before run started
   testcube-client --start-run -name "nightly run for testcube"  --team Core --product TestCube
 
-  # add --finish-run once run completed
+  # call --finish-run once run completed
    testcube-client --finish-run -xunit **/results/*.xml
 
-In this way to upload test results, TestCube will use the exact `start_time` and `end_time` for the run.
+In this way, TestCube will record the **exact** ``start_time`` and ``end_time`` for the run.
 
-Another choice is use one time `--run` command to upload test results.::
+Another choice is use one time ``--run`` command to upload test results.::
 
   # put this command at the end of a run
   testcube-client --run -name "smoke tests for testcube" --team XPower --product TestCube --product-version v1.0 --xunit **/smoke*.xml
+
+With this choice, TestCube will use current time as ``end_time`` of the run, and guess ``start_time``
+according to run duration.
 
 Command-line Options
 ~~~~~~~~~~~~~~~~~~~~
@@ -83,3 +86,6 @@ The optional arguments::
                         Specify the product name.
   -v PRODUCT_VERSION, --product-version PRODUCT_VERSION
                         Specify the product version. [Optional]
+
+
+.. _TestCube: https://github.com/tobyqin/testcube
