@@ -2,18 +2,12 @@
 # -*- coding: utf-8 -*-
 
 """
-test_testcube_client
-----------------------------------
-
-Tests for `testcube_client` module. Requires a testcube server.
+Tests for `request_client` module. Requires a testcube server.
 """
 
 import unittest
 
-from click.testing import CliRunner
-
-from testcube_client import cli
-from testcube_client import testcube_client as client
+from testcube_client import request_client as client
 from testcube_client.request_helper import *
 
 server = 'http://127.0.0.1:8000'
@@ -21,7 +15,7 @@ server = 'http://127.0.0.1:8000'
 
 class TestCases(unittest.TestCase):
     def setUp(self):
-        pass
+        register_client(server)
 
     def tearDown(self):
         pass
@@ -93,11 +87,6 @@ class TestCases(unittest.TestCase):
         except ValueError as e:
             print('cannot deleted twice! ' + str(e))
 
-    def test_command_line_interface(self):
-        runner = CliRunner()
-        result = runner.invoke(cli.main)
-        assert result.exit_code == 0
-        assert 'testcube_client.cli.main' in result.output
-        help_result = runner.invoke(cli.main, ['--help'])
-        assert help_result.exit_code == 0
-        assert '--help  Show this message and exit.' in help_result.output
+
+if __name__ == '__main__':
+    unittest.main()

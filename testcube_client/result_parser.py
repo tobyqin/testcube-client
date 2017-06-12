@@ -36,7 +36,7 @@ def get_results(xml_files):
         with open_xml(xml) as f:
             info['files'].append({'name': xml, 'content': f.read()})
 
-        suite, result = parse(open_xml(xml))
+        suite, result = parse(xml)
         info['duration'] += suite.time
         results.extend(getattr(result, 'tests'))
         passed = len(result.tests) == len(result.passed) + len(result.skipped)

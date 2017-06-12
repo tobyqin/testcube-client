@@ -2,17 +2,14 @@
 # -*- coding: utf-8 -*-
 
 """
-test_testcube_client
-----------------------------------
-
-Tests for `testcube_client` module. Requires a testcube server.
+Tests for `business` module. Requires a testcube server.
 """
 
 import unittest
 from os import chdir
 
 from testcube_client import business
-from testcube_client import testcube_client as client
+from testcube_client import request_client as client
 from testcube_client.request_helper import *
 from testcube_client.result_parser import get_results
 from tests.default.test_xunit_parser import xunit_xml, xunit_dir
@@ -108,3 +105,7 @@ class TestCases(unittest.TestCase):
         for result in results:
             r = business.create_result(run, result)
             print(r)
+
+
+if __name__ == '__main__':
+    unittest.main()

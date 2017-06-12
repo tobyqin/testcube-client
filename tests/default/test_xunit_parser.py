@@ -1,5 +1,4 @@
 import unittest
-from codecs import open
 from os import chdir
 from os.path import dirname, join, curdir, realpath
 
@@ -13,13 +12,13 @@ xunit_xml = join(xunit_dir, 'results.xml')
 
 class TestCases(unittest.TestCase):
     def setUp(self):
-        chdir(dirname(__file__))
+        pass
 
     def tearDown(self):
         pass
 
     def test_basic_parser(self):
-        suite, result = parse(open(xunit_xml, encoding='utf-8'))
+        suite, result = parse(xunit_xml)
         assert isinstance(suite, unittest.TestSuite)
         assert isinstance(result, unittest.TestResult)
 
@@ -39,6 +38,7 @@ class TestCases(unittest.TestCase):
         assert len(results) == 3
 
     def test_get_xml_by_pattern(self):
+        chdir(dirname(__file__))
         print(realpath(curdir))
         files = get_files('../**/*.xml')
         assert len(files) == 2
@@ -66,6 +66,7 @@ class TestCases(unittest.TestCase):
         assert len(files) == 2
 
     def test_parse_multiple_xml(self):
+        chdir(dirname(__file__))
         files = get_files('../**/re*.xml')
         results, info = get_results(files)
         print(results)
@@ -79,3 +80,7 @@ class TestCases(unittest.TestCase):
         assert len(results) == 10
         print(info['start_time'], info['end_time'])
         assert info['start_time'] < info['end_time']
+
+
+if __name__ == '__main__':
+    unittest.main()

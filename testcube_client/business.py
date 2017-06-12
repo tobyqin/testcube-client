@@ -1,6 +1,6 @@
 import arrow
 
-import testcube_client.testcube_client as client
+import testcube_client.request_client as client
 from testcube_client.result_parser import get_results, get_files
 from testcube_client.settings import API, config
 
