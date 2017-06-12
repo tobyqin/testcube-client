@@ -14,7 +14,8 @@ from testcube_client.request_helper import *
 from testcube_client.result_parser import get_results
 from tests.default.test_xunit_parser import xunit_xml, xunit_dir
 
-server = 'http://127.0.0.1:8000'
+# server = 'http://127.0.0.1:8000'
+server = 'http://cns-qaauto5:7000'
 
 
 class TestCases(unittest.TestCase):

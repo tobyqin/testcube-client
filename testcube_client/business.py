@@ -2,7 +2,7 @@ import arrow
 
 from . import request_client as client
 from .result_parser import get_results, get_files
-from .settings import API, config, save_config
+from .settings import API, config, save_config, get_cache, add_cache
 
 outcome_map = {'success': 0,
                'failure': 1,
@@ -93,44 +93,61 @@ def finish_run(result_xml_pattern, run=None, **kwargs):
 def get_or_create_team(name):
     """return team url."""
     data = {'name': name}
+    found = get_cache(API.team, **data)
+
+    if found:
+        return found['url']
+
     found = client.get(API.team, data)
 
     if found['count']:
+        add_cache(API.team, found['results'])
         return found['results'][0]['url']
     else:
-        return client.post(API.team, data)['url']
+        team = client.post(API.team, data)
+        add_cache(API.team, team)
+        return team['url']
 
 
 def update_team(name, owner):
     pass
 
 
-def get_or_create_product(name, version=None):
+def get_or_create_product(name, version='latest'):
     """return product url."""
     data = {'name': name}
 
     if version:
         data['version'] = version
 
+    found = get_cache(API.product, **data)
+    if found:
+        return found['url']
+
     found = client.get(API.product, data)
 
     if found['count']:
+        add_cache(API.product, found['results'])
         return found['results'][0]['url']
     else:
-        return client.post(API.product, data)['url']
-
-
-def add_product(name, version):
-    pass
+        product = client.post(API.product, data)
+        add_cache(API.product, product)
+        return product['url']
 
 
 def get_or_create_testcase(name, full_name, team_url, product_url):
     """return testcase url."""
     data = {'name': name, 'full_name': full_name}
 
+    found = get_cache(API.testcase, **data)
+    if found:
+        if found['team'] == team_url and found['product'] == product_url:
+            return found['url']
+
     found = client.get(API.testcase, data)
 
     if found['count']:
+        add_cache(API.testcase, found['results'])
         for tc in found['results']:
             if tc['team'] == team_url and tc['product'] == product_url:
                 return tc['url']
@@ -138,7 +155,9 @@ def get_or_create_testcase(name, full_name, team_url, product_url):
     data['created_by'] = config['user']
     data['team'] = team_url
     data['product'] = product_url
-    return client.post(API.testcase, data)['url']
+    testcase = client.post(API.testcase, data)
+    add_cache(API.testcase, testcase)
+    return testcase['url']
 
 
 def get_or_create_client(name=None):
@@ -147,13 +166,19 @@ def get_or_create_client(name=None):
         name = config['host']
 
     data = {'name': name}
+    found = get_cache(API.client, **data)
+    if found:
+        return found['url']
 
     found = client.get(API.client, data)
 
     if found['count']:
+        add_cache(API.client, found['results'])
         return found['results'][0]['url']
     else:
-        return client.post(API.client, data)['url']
+        c = client.post(API.client, data)
+        add_cache(API.client, c)
+        return c['url']
 
 
 def create_result(run, result):

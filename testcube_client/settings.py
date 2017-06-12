@@ -11,10 +11,18 @@ home_dir = expanduser('~')
 config_file = join(home_dir, '.testcube_client.json')
 
 
-def add_cache(type, dict_obj):
-    dict_obj['__type__'] = type
-    config['cache'].append(dict_obj)
-    save_config()
+def add_cache(type, obj):
+    if isinstance(obj, list):
+        for i in obj:
+            add_cache(type, i)
+
+    elif isinstance(obj, dict):
+        obj['__type__'] = type
+        config['cache'].append(obj)
+        save_config()
+
+    else:
+        raise ValueError('Not support caching: {}!'.format(obj))
 
 
 def get_cache(type, expected_one=True, **filters):
