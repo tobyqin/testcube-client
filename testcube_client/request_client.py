@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import requests
 
-from testcube_client.request_helper import api_auth, api_result, api_url
+from .request_helper import api_auth, api_result, api_url
 
 
 def get(api_endpoint, params=None):

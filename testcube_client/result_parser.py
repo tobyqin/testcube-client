@@ -4,7 +4,7 @@ from os.path import realpath
 import arrow
 import glob2
 
-from testcube_client.utils.xunitparser import parse
+from .utils.xunitparser import parse
 
 
 def get_files(pattern):

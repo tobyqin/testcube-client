@@ -2,8 +2,8 @@
 
 import argparse
 
-from testcube_client import business
-from testcube_client.request_helper import register_client
+from . import business
+from .request_helper import register_client
 
 parser = argparse.ArgumentParser(description="A Python client for testcube.")
 
@@ -44,7 +44,7 @@ def main():
     args = parser.parse_args()
     if args.register:
         info = register_client(args.register)
-        print('Registration success! Please continue other actions.'.format_map(info))
+        print('Registration success! Please continue other actions. <{}>'.format(info['token']))
     elif args.run:
         if args.start_run or args.finish_run:
             print('Should not combine with --start-run or --finish-run argument!')
