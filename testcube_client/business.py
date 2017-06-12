@@ -2,7 +2,7 @@ import arrow
 
 from . import request_client as client
 from .result_parser import get_results, get_files
-from .settings import API, config
+from .settings import API, config, save_config
 
 outcome_map = {'success': 0,
                'failure': 1,
@@ -59,6 +59,7 @@ def start_run(team_name, product_name, product_version=None, run_name=None, **kw
 
     run = client.post(API.run, data=data)
     config['current_run'] = run
+    save_config()
     print('Start new run: {}'.format(run['url']))
     return run['url']
 
@@ -85,6 +86,7 @@ def finish_run(result_xml_pattern, run=None, **kwargs):
 
     run = client.patch(run['url'], data)
     config['current_run'] = run
+    save_config()
     print('Finish run: {}'.format(run['url']))
 
 
