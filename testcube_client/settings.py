@@ -1,18 +1,65 @@
 import getpass
 import json
-import socket
-from os.path import exists, join, expanduser
 import platform
+import socket
+from codecs import open
+from os.path import exists, join, expanduser
 
-config = {}
+config = {'cache': []}
 
 home_dir = expanduser('~')
 config_file = join(home_dir, '.testcube_client.json')
 
 
+def add_cache(type, dict_obj):
+    dict_obj['__type__'] = type
+    config['cache'].append(dict_obj)
+    save_config()
+
+
+def get_cache(type, expected_one=True, **filters):
+    """example: get_cache(type='User', name='Toby',age=18)"""
+    filters['__type__'] = type
+    matched = []
+    for c in config['cache']:
+        c = c.copy()
+        success = True
+        for k, v in filters.items():
+            success = success and c.get(k, None) == v
+
+        if success:
+            c.pop('__type__')
+            matched.append(c)
+
+    if expected_one:
+        if len(matched) > 1:
+            raise ValueError("Multiple cache hit! {}".format(filters))
+
+        return matched[0] if matched else None
+
+    else:
+        return matched
+
+
+def delete_cache(type, **filters):
+    """example: delete_cache(type='User', name='Toby',age=18)"""
+    filters['__type__'] = type
+    not_matched = []
+    for c in config['cache']:
+        success = True
+        for k, v in filters.items():
+            success = success and c.get(k, None) == v
+
+        if not success:
+            not_matched.append(c)
+
+    config['cache'] = not_matched
+    save_config()
+
+
 def load_config():
     if exists(config_file):
-        with open(config_file) as f:
+        with open(config_file, encoding='utf-8') as f:
             content = f.read()
             if content:
                 config.update(json.loads(content))
@@ -23,7 +70,7 @@ def load_config():
 
 
 def save_config():
-    with open(config_file, 'w') as f:
+    with open(config_file, mode='w', encoding='utf-8') as f:
         f.write(json.dumps(config, indent=4))
 
 
