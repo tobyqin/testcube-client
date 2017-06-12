@@ -1,3 +1,5 @@
+import re
+
 import requests
 
 from .settings import config, save_config
@@ -46,6 +48,20 @@ def api_result(response, as_json=True):
                                               response.text))
 
     if as_json:
-        return response.json()
+        try:
+            return response.json()
+        except ValueError:
+            return obj_moved(response)
     else:
         return response.text
+
+
+def obj_moved(response):
+    """It might returns Document Moved page on some python version."""
+    pattern = r'<a HREF="(.*)">here<\/a>'
+    match = re.search(pattern, response.text)
+    if match:
+        return requests.get(match.group(1)).json()
+    else:
+        raise ValueError("Expected json response at {} [{}]: {}"
+                         .format(response.url, response.request.method, response.text))

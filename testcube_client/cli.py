@@ -36,8 +36,9 @@ def action(func, *args, **kwargs):
         return 0
 
     except Exception as e:
+        print('Action failed!!!')
         print(type(e).__name__ + ': ' + ','.join(e.args))
-        return 1
+        raise e
 
 
 def main():
