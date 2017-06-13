@@ -1,6 +1,11 @@
 =======
 History
 =======
+
+0.2.1 (2017-06-13)
+------------------
+* Fix document moved header issue when server deployed in IIS server.
+
 0.2.0 (2017-06-12)
 ------------------
 * Add cache to improve performance.

@@ -1,11 +1,32 @@
 # -*- coding: utf-8 -*-
+"""
+
+A Python client for testcube.
+
+1. Register a testcube server::
+
+  testcube-client --register http://server:8000
+
+2.1 Start a test run::
+
+  testcube-client --start-run -name "nightly run for testcube"  --team Core --product TestCube
+
+2.2 Finish a test run with results, should --start-run first::
+
+  testcube-client --finish-run --xunit-files **/results/*.xml
+
+3. Start and finish run by one step::
+
+  testcube-client --run -n "smoke tests for testcube" -t XPower -p TestCube -v v1.0 -x **/smoke*.xml
+
+"""
 
 import argparse
 
 from . import business
 from .request_helper import register_client
 
-parser = argparse.ArgumentParser(description="A Python client for testcube.")
+parser = argparse.ArgumentParser(usage=__doc__)
 
 parser.add_argument('-r', '--register',
                     help='Register to the TestCube server, e.g. http://server:8000')
@@ -89,22 +110,6 @@ def main():
 
         action(business.finish_run,
                result_xml_pattern=args.xunit_files)
-
-
-#
-# @click.command()
-# @click.option('--start-run', '-s', help='Start a run.', is_flag=True)
-# @click.option('--finish-run', '-f', help='Finish a run.', is_flag=True)
-# @click.option('--run', '-r', help='Upload a run at one time.', is_flag=True)
-# @click.option('--xunit-result', '-x', help='Specify the xunit xml results, e.g "**/result*.xml"')
-# @click.option('--name', '-n', help='Specify the name.')
-# @click.option('--team', '-t', help='Specify the team.')
-# @click.option('--product', '-p', help='Specify the product.')
-# @click.option('--product-version', '-v', help='Specify the product version. [Optional]')
-# @click.option('--register', '-r', help='Register to the TestCube server, e.g. http://server:8000')
-# def main(**kwargs):
-#     """Console script for testcube_client"""
-#     print(kwargs)
 
 
 if __name__ == "__main__":

@@ -1,5 +1,3 @@
-import re
-
 import requests
 
 from .settings import config, save_config
@@ -57,11 +55,12 @@ def api_result(response, as_json=True):
 
 
 def obj_moved(response):
-    """It might returns Document Moved page on some python version."""
-    pattern = r'<a HREF="(.*)">here<\/a>'
-    match = re.search(pattern, response.text)
-    if match:
-        return requests.get(match.group(1)).json()
+    """
+    It might returns Document Moved page on IIS server.
+    https://forums.iis.net/p/1209573/2073536.aspx?IIS+7+5+adding+Document+Moved+content+when+Location+header+is+present
+    """
+    if response.url != response.headers['location']:
+        return requests.get(response.headers['location']).json()
     else:
         raise ValueError("Expected json response at {} [{}]: {}"
                          .format(response.url, response.request.method, response.text))
