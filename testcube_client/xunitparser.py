@@ -167,6 +167,9 @@ class Parser(object):
         ts.time = float(root.attrib.get('time', 0))
         tr.time = to_timedelta(ts.time)
 
+        if root.attrib.get('timestamp'):
+            ts.timestamp = root.attrib['timestamp']
+
         # check totals if they are in the root XML element
         if 'errors' in root.attrib:
             assert len(tr.errors) == int(root.attrib['errors'])
