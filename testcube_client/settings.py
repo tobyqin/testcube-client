@@ -18,6 +18,10 @@ def add_cache(type, obj):
 
     elif isinstance(obj, dict):
         obj['__type__'] = type
+
+        if get_cache(type, **obj):
+            return
+
         config['cache'].append(obj)
         save_config()
 

@@ -9,3 +9,4 @@ requests
 pytest
 glob2
 arrow
+faker
