@@ -49,6 +49,9 @@ parser.add_argument('-p', '--product',
                     help='Specify the product name.')
 parser.add_argument('-v', '--product-version',
                     help='Specify the product version. [Optional]')
+parser.add_argument('-f', '--force',
+                    help='Force the action, support --register command.',
+                    action='store_true')
 
 
 def action(func, *args, **kwargs):
@@ -65,7 +68,7 @@ def action(func, *args, **kwargs):
 def main():
     args = parser.parse_args()
     if args.register:
-        info = register_client(args.register)
+        info = register_client(args.register, args.force)
         print('Registration success! Please continue other actions. <{}>'.format(info['token']))
     elif args.run:
         if args.start_run or args.finish_run:

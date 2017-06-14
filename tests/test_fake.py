@@ -19,12 +19,9 @@ fake = Faker()
 server = 'http://127.0.0.1:8000'
 
 
-# server = 'http://cns-qaauto5:7000'
-
-
 class TestCases(unittest.TestCase):
     def setUp(self):
-        register_client(server)
+        register_client(server, force=True)
         self.team = business.get_or_create_team('Core')
         self.product = business.get_or_create_product('TestCube')
         chdir(xunit_dir)

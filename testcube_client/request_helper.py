@@ -3,7 +3,11 @@ import requests
 from .settings import config, save_config
 
 
-def register_client(server_url):
+def register_client(server_url, force=False):
+    if 'token' in config and not force:
+        print('Already register to: {}'.format(config['server']))
+        return {'client': config['client'], 'token': config['token']}
+
     client_type = 'testcube_python_client'
 
     data = {'client_type': client_type,
@@ -21,10 +25,14 @@ def register_client(server_url):
     assert response.status_code == 200, 'Failed to register client, response: ' + response.text
 
     info = response.json()
+
     config['server'] = server_url
     config.update(info)
-    save_config()
+    config['cache'] = []
+    config.pop('current_run', None)
 
+    save_config()
+    print('Register to: {}'.format(config['server']))
     return info
 
 

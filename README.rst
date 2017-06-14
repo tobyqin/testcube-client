@@ -87,6 +87,7 @@ The optional arguments::
                         Specify the product name.
   -v PRODUCT_VERSION, --product-version PRODUCT_VERSION
                         Specify the product version. [Optional]
+  -f, --force           Force the command, when force register, will clear all caches.
 
 
 .. _TestCube: https://github.com/tobyqin/testcube

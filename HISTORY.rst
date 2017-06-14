@@ -4,6 +4,10 @@ History
 
 0.2.2 (2017-06-13)
 ------------------
+* Support --force command when register a server.
+
+0.2.2 (2017-06-13)
+------------------
 * Sum the testsuite time from testcases if there is no time attribute in result xmls.
 
 0.2.1 (2017-06-13)
