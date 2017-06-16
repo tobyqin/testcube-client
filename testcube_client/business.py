@@ -101,7 +101,7 @@ def get_or_create_team(name):
     found = client.get(API.team, data)
 
     if found['count']:
-        add_cache(API.team, found['results'])
+        add_cache(API.team, found['results'][0])
         return found['results'][0]['url']
     else:
         team = client.post(API.team, data)
@@ -127,7 +127,7 @@ def get_or_create_product(name, version='latest'):
     found = client.get(API.product, data)
 
     if found['count']:
-        add_cache(API.product, found['results'])
+        add_cache(API.product, found['results'][0])
         return found['results'][0]['url']
     else:
         product = client.post(API.product, data)
@@ -147,9 +147,9 @@ def get_or_create_testcase(name, full_name, team_url, product_url):
     found = client.get(API.testcase, data)
 
     if found['count']:
-        add_cache(API.testcase, found['results'])
         for tc in found['results']:
             if tc['team'] == team_url and tc['product'] == product_url:
+                add_cache(API.testcase, tc)
                 return tc['url']
 
     data['created_by'] = config['user']
@@ -173,7 +173,7 @@ def get_or_create_client(name=None):
     found = client.get(API.client, data)
 
     if found['count']:
-        add_cache(API.client, found['results'])
+        add_cache(API.client, found['results'][0])
         return found['results'][0]['url']
     else:
         c = client.post(API.client, data)

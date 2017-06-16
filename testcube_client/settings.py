@@ -35,12 +35,11 @@ def get_cache(type, expected_one=True, **filters):
     matched = []
     for c in config['cache']:
         c = c.copy()
-        success = True
+        success = []
         for k, v in filters.items():
-            success = success and c.get(k, None) == v
+            success.append(c.get(k, None) == v)
 
-        if success:
-            c.pop('__type__')
+        if all(success):
             matched.append(c)
 
     if expected_one:
@@ -58,11 +57,11 @@ def delete_cache(type, **filters):
     filters['__type__'] = type
     not_matched = []
     for c in config['cache']:
-        success = True
+        success = []
         for k, v in filters.items():
-            success = success and c.get(k, None) == v
+            success.append(c.get(k, None) == v)
 
-        if not success:
+        if not all(success):
             not_matched.append(c)
 
     config['cache'] = not_matched

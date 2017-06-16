@@ -2,6 +2,10 @@
 History
 =======
 
+0.2.4 (2017-06-16)
+------------------
+* Bug fix - multiple cache hits error.
+
 0.2.2 (2017-06-13)
 ------------------
 * Support --force command when register a server.
