@@ -61,7 +61,8 @@ def action(func, *args, **kwargs):
 
     except Exception as e:
         print('Action failed!!!')
-        print(type(e).__name__ + ': ' + ','.join(e.args))
+        message = type(e).__name__ + ': ' + str(e)
+        print(message.decode('utf8') if hasattr(message, 'decode') else message)
         raise e
 
 

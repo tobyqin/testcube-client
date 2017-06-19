@@ -2,6 +2,10 @@
 History
 =======
 
+0.2.5 (2017-06-19)
+------------------
+* Bug fix - unicode exception message in python 2.
+
 0.2.4 (2017-06-16)
 ------------------
 * Bug fix - multiple cache hits error.
