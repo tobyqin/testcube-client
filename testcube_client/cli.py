@@ -70,7 +70,7 @@ def main():
     args = parser.parse_args()
     if args.register:
         info = register_client(args.register, args.force)
-        print('Registration success! Please continue other actions. <{}>'.format(info['token']))
+        print('Registration success! Please continue your actions. <{}>'.format(info['token']))
     elif args.run:
         if args.start_run or args.finish_run:
             print('Should not combine with --start-run or --finish-run argument!')

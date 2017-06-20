@@ -28,6 +28,14 @@ def open_xml(file):
     return open(file, encoding='utf-8')
 
 
+def read_file(file):
+    try:
+        with open(file, encoding='utf-8') as f:
+            return f.read
+    except UnicodeDecodeError as e:
+        return 'Failed to open file: {}: {}'.format(file, str(e))
+
+
 def get_results(xml_files):
     """return a list of test results and info dict for multiple xml files"""
     results = []
@@ -35,9 +43,7 @@ def get_results(xml_files):
     time_from_suite = True
 
     for xml in xml_files:
-        with open_xml(xml) as f:
-            info['files'].append({'name': xml, 'content': f.read()})
-
+        info['files'].append({'name': xml, 'content': read_file(xml)})
         suite, result = parse(xml)
 
         # expect there is a time attribute in suite node
