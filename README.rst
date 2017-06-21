@@ -38,30 +38,30 @@ Install testcube-client via pip is the most easy way.
 Register to Server
 ~~~~~~~~~~~~~~~~~~
 
-You should have a TestCube_ server deployed, then run ``--register`` command.::
+You must have a TestCube_ server deployed at somewhere, then run ``--register`` command.::
 
   testcube-client register http://testcube-server:8000
 
-Submit Run Results
+Upload Run Results
 ~~~~~~~~~~~~~~~~~~
 
-Once you had register to the server, you have 2 ways to upload test results,
-one is call ``--start-run`` at the beginning and call ``--finish--run`` when it finished.::
+Once you registered to a server, you will have 2 ways to upload test results,
+first choice is calling ``--start-run`` at the beginning and calling ``--finish--run`` when finished.::
 
   # call --start-run before run started
   testcube-client --start-run -name "nightly run for testcube"  --team Core --product TestCube
 
-  # call --finish-run once run completed
+  # call --finish-run after run finished
    testcube-client --finish-run --xunit-files **/results/*.xml
 
 In this way, TestCube will record the **exact** ``start_time`` and ``end_time`` for the run.
 
-Another choice is ``--run`` command to upload test results at one time.::
+Another choice is using ``--run`` command to upload test results like a batch.::
 
   # put this command at the end of a run
   testcube-client --run -n "smoke tests for testcube" -t XPower -p TestCube -v v1.0 -x **/smoke*.xml
 
-With this choice, TestCube will use current time as ``end_time`` of the run, and guess ``start_time``
+With this choice, TestCube will use current time as ``end_time`` for the run, and guess ``start_time``
 according to run duration.
 
 Command-line Options
