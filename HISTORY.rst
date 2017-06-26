@@ -2,6 +2,10 @@
 History
 =======
 
+0.2.6 (2017-06-19)
+------------------
+* Always summarize run duration from test cases.
+
 0.2.5 (2017-06-19)
 ------------------
 * Bug fix - unicode exception message in python 2.

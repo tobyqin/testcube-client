@@ -17,7 +17,7 @@ requirements = [
 
 setup(
     name='testcube-client',
-    version='0.2.6',
+    version='0.2.7',
     description="A Python client for testcube. (https://github.com/tobyqin/testcube)",
     long_description=readme + '\n\n' + history,
     author="Toby Qin",

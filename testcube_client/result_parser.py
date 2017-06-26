@@ -40,26 +40,19 @@ def get_results(xml_files):
     """return a list of test results and info dict for multiple xml files"""
     results = []
     info = {'files': [], 'duration': 0, 'end_time': arrow.utcnow(), 'passed': True}
-    time_from_suite = True
 
     for xml in xml_files:
         info['files'].append({'name': xml, 'content': read_file(xml)})
         suite, result = parse(xml)
 
-        # expect there is a time attribute in suite node
-        time_from_suite = time_from_suite and suite.time
-
-        if time_from_suite:
-            info['duration'] += suite.time
-
         results.extend(getattr(result, 'tests'))
         passed = len(result.tests) == len(result.passed) + len(result.skipped)
         info['passed'] = info['passed'] and passed
 
-    # sum the time from testcase if no time in suite
-    if not time_from_suite:
-        for test in results:
-            info['duration'] += test.time.total_seconds()
+    # sum the time from testcase
+
+    for test in results:
+        info['duration'] += test.time.total_seconds()
 
     info['start_time'] = info['end_time'].shift(seconds=-info['duration'])
     info['start_time'] = info['start_time'].format()
