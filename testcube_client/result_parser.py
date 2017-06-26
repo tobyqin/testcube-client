@@ -46,8 +46,9 @@ def get_results(xml_files):
         suite, result = parse(xml)
 
         results.extend(getattr(result, 'tests'))
-        passed = len(result.tests) == len(result.passed) + len(result.skipped)
-        info['passed'] = info['passed'] and passed
+
+        if len(result.tests) != len(result.passed) + len(result.skipped):
+            info['passed'] = False
 
     # sum the time from testcase
 
