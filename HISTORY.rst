@@ -2,36 +2,19 @@
 History
 =======
 
-0.2.6 (2017-06-19)
+0.2.9 (2017-06-26)
 ------------------
+* Abort run if failed to analyze its xml.
 * Always summarize run duration from test cases.
-
-0.2.5 (2017-06-19)
-------------------
 * Bug fix - unicode exception message in python 2.
-
-0.2.4 (2017-06-16)
-------------------
 * Bug fix - multiple cache hits error.
 
 0.2.2 (2017-06-13)
 ------------------
 * Support --force command when register a server.
-
-0.2.2 (2017-06-13)
-------------------
-* Sum the testsuite time from testcases if there is no time attribute in result xmls.
-
-0.2.1 (2017-06-13)
-------------------
+* Sum the testsuite time from testcases if there is no time attribute in result xml.
 * Fix document moved header issue when server deployed in IIS server.
-
-0.2.0 (2017-06-12)
-------------------
 * Add cache to improve performance.
-
-0.1.4 (2017-06-12)
-------------------
 * Fix import error.
 
 0.1.3 (2017-06-12)

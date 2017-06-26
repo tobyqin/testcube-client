@@ -64,6 +64,18 @@ def start_run(team_name, product_name, product_version=None, run_name=None, **kw
     return run['url']
 
 
+def abort_run(run=None):
+    if not run:
+        assert 'current_run' in config, 'Seems like you never start a run!'
+        run = config['current_run']
+
+    data = {'status': RunStatus.Abandoned, 'state': RunState.Aborted}
+    run = client.patch(run['url'], data)
+    config['current_run'] = run
+    save_config()
+    print('Abandon run: {}'.format(run['url']))
+
+
 def finish_run(result_xml_pattern, run=None, **kwargs):
     """Follow up step to save run info after starting a run."""
     files = get_files(result_xml_pattern)

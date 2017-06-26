@@ -63,6 +63,7 @@ def action(func, *args, **kwargs):
         print('Action failed!!!')
         message = type(e).__name__ + ': ' + str(e)
         print(message.decode('utf8') if hasattr(message, 'decode') else message)
+        business.abort_run()
         raise e
 
 
