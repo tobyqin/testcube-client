@@ -20,12 +20,12 @@ class TestResult(unittest.TestResult):
         if not hasattr(self, 'tests'):
             self.tests = []
 
-        self.tests.append(test)
-
-    def addSuccess(self, test):
         if not hasattr(self, 'passed'):
             self.passed = []
 
+        self.tests.append(test)
+
+    def addSuccess(self, test):
         self.passed.append(test)
 
     def _exc_info_to_string(self, err, test):
