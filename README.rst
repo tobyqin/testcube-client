@@ -52,14 +52,14 @@ first choice is calling ``--start-run`` at the beginning and calling ``--finish-
   testcube-client --start-run -name "nightly run for testcube"  --team Core --product TestCube
 
   # call --finish-run after run finished
-   testcube-client --finish-run --xunit-files **/results/*.xml
+   testcube-client --finish-run --xunit-files "**/results/*.xml"
 
 In this way, TestCube will record the **exact** ``start_time`` and ``end_time`` for the run.
 
 Another choice is using ``--run`` command to upload test results like a batch.::
 
   # put this command at the end of a run
-  testcube-client --run -n "smoke tests for testcube" -t XPower -p TestCube -v v1.0 -x **/smoke*.xml
+  testcube-client --run -n "smoke tests for testcube" -t XPower -p TestCube -v v1.0 -x "**/smoke*.xml"
 
 With this choice, TestCube will use current time as ``end_time`` for the run, and guess ``start_time``
 according to run duration.

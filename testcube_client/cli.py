@@ -13,11 +13,11 @@ A Python client for testcube.
 
 2.2 Finish a test run with results, should --start-run first::
 
-  testcube-client --finish-run --xunit-files **/results/*.xml
+  testcube-client --finish-run --xunit-files "**/results/*.xml"
 
 3. Start and finish run by one step::
 
-  testcube-client --run -n "smoke tests for testcube" -t XPower -p TestCube -v v1.0 -x **/smoke*.xml
+  testcube-client --run -n "smoke tests for testcube" -t XPower -p TestCube -v v1.0 -x "**/smoke*.xml"
 
 """
 
