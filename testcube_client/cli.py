@@ -82,10 +82,10 @@ def main():
             return -1
 
         action(business.run,
-               team=args.team,
-               product=args.product,
-               version=args.product_version,
-               name=args.name,
+               team_name=args.team,
+               product_name=args.product,
+               product_version=args.product_version,
+               run_name=args.name,
                result_xml_pattern=args.xunit_files)
 
 
