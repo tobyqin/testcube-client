@@ -29,7 +29,7 @@ class TestCases(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_add_runs(self):
+    def test_add_run_steps(self):
         run_url = business.start_run(team_name='Core',
                                      product_name='TestCube',
                                      run_name=fake.text(100))
@@ -37,6 +37,14 @@ class TestCases(unittest.TestCase):
         print(run_url)
 
         business.finish_run('re*.xml')
+
+    def test_add_run_one(self):
+        run_url = business.run(team_name='Core',
+                               product_name='TestCube',
+                               run_name=fake.text(100),
+                               result_xml_pattern='re*.xml')
+
+        print(run_url)
 
 
 if __name__ == '__main__':

@@ -2,8 +2,9 @@
 History
 =======
 
-0.2.9 (2017-06-26)
+0.3.1 (2017-06-26)
 ------------------
+* Bug fix - run duration data incorrect.
 * Abort run if failed to analyze its xml.
 * Always summarize run duration from test cases.
 * Bug fix - unicode exception message in python 2.

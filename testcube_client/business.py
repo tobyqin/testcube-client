@@ -29,14 +29,8 @@ class RunStatus:
 def run(result_xml_pattern, name=None, **kwargs):
     """One step to save a run with multiple xml files."""
 
-    team = kwargs.pop('team')
-    product = kwargs.pop('product')
-    version = kwargs.pop('version', None)
-    start_run(team_name=team, product_name=product,
-              product_version=version, run_name=name,
-              guess_start_time=True, **kwargs)
-
-    finish_run(result_xml_pattern)
+    start_run(**kwargs)
+    finish_run(result_xml_pattern=result_xml_pattern, guess_start_time=True)
 
 
 def start_run(team_name, product_name, product_version=None, run_name=None, **kwargs):
