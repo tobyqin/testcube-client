@@ -119,10 +119,6 @@ def get_or_create_team(name):
         return team['url']
 
 
-def update_team(name, owner):
-    pass
-
-
 def get_or_create_product(name, version='latest'):
     """return product url."""
     data = {'name': name}
@@ -147,13 +143,15 @@ def get_or_create_product(name, version='latest'):
 
 def get_or_create_testcase(name, full_name, team_url, product_url):
     """return testcase url."""
-    data = {'name': name, 'full_name': full_name}
+    data = {'name': name, 'full_name': full_name, 'team': team_url, 'product': product_url}
 
     found = get_cache(API.testcase, **data)
     if found:
-        if found['team'] == team_url and found['product'] == product_url:
-            return found['url']
+        return found['url']
 
+    # team and product are not supported in query
+    del data['team']
+    del data['product']
     found = client.get(API.testcase, data)
 
     if found['count']:
@@ -162,6 +160,7 @@ def get_or_create_testcase(name, full_name, team_url, product_url):
                 add_cache(API.testcase, tc)
                 return tc['url']
 
+    # create the testcase not found from cache or server
     data['created_by'] = config['user']
     data['team'] = team_url
     data['product'] = product_url
@@ -185,10 +184,10 @@ def get_or_create_client(name=None):
     if found['count']:
         add_cache(API.client, found['results'][0])
         return found['results'][0]['url']
-    else:
-        c = client.post(API.client, data)
-        add_cache(API.client, c)
-        return c['url']
+
+    c = client.post(API.client, data)
+    add_cache(API.client, c)
+    return c['url']
 
 
 def create_result(run, result):
