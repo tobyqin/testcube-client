@@ -34,6 +34,7 @@ def get_cache(type, expected_one=True, **filters):
     filters['__type__'] = type
     matched = []
     for c in config['cache']:
+        c = c.copy()  # copy it for return  to avoid user update the cached object.
 
         success = []
         for k, v in filters.items():
