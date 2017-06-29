@@ -2,8 +2,9 @@
 History
 =======
 
-0.3.1 (2017-06-26)
+0.3.3 (2017-06-29)
 ------------------
+* Improve run url in output.
 * Bug fix - run duration data incorrect.
 * Abort run if failed to analyze its xml.
 * Always summarize run duration from test cases.

@@ -26,6 +26,10 @@ class RunStatus:
     Abandoned = 3
 
 
+def get_run_url(run_obj):
+    return run_obj['url'].replace('api/', '')[0:-1]
+
+
 def run(result_xml_pattern, name=None, **kwargs):
     """One step to save a run with multiple xml files."""
 
@@ -54,7 +58,7 @@ def start_run(team_name, product_name, product_version=None, run_name=None, **kw
     run = client.post(API.run, data=data)
     config['current_run'] = run
     save_config()
-    print('Start new run: {}'.format(run['url']))
+    print('Start new run: {}'.format(get_run_url(run)))
     return run['url']
 
 
@@ -93,7 +97,7 @@ def finish_run(result_xml_pattern, run=None, **kwargs):
     run = client.patch(run['url'], data)
     config['current_run'] = run
     save_config()
-    print('Finish run: {}'.format(run['url']))
+    print('Finish run: {}'.format(get_run_url(run)))
 
 
 def get_or_create_team(name):

@@ -30,11 +30,11 @@ def add_cache(type, obj):
 
 
 def get_cache(type, expected_one=True, **filters):
-    """example: get_cache(type='User', name='Toby',age=18)"""
+    """example: get_cache(type='User', name='Toby', age=18)"""
     filters['__type__'] = type
     matched = []
     for c in config['cache']:
-        c = c.copy()
+
         success = []
         for k, v in filters.items():
             success.append(c.get(k, None) == v)

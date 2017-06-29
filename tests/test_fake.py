@@ -39,12 +39,16 @@ class TestCases(unittest.TestCase):
         business.finish_run('re*.xml')
 
     def test_add_run_one(self):
-        run_url = business.run(team_name='Core',
-                               product_name='TestCube',
-                               run_name=fake.text(100),
-                               result_xml_pattern='re*.xml')
+        business.run(team_name='Core',
+                     product_name='TestCube',
+                     run_name=fake.text(100),
+                     result_xml_pattern='*.xml')
 
-        print(run_url)
+        # start second time
+        business.run(team_name='Core',
+                     product_name='TestCube',
+                     run_name=fake.text(100),
+                     result_xml_pattern='*.xml')
 
 
 if __name__ == '__main__':
