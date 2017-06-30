@@ -11,7 +11,7 @@ def get_register_url(server_url):
     if not server_url.endswith('/'):
         server_url += '/'
 
-    return '{}{}'.format(server_url, 'client-register')
+    return server_url, '{}{}'.format(server_url, 'client-register')
 
 
 def get_auth_version(url):
@@ -25,7 +25,7 @@ def get_auth_version(url):
 
 def register_client(server_url, force=False):
     logging.debug('register_client: {}, force={}'.format(server_url, force))
-    register_url = get_register_url(server_url)
+    server_url, register_url = get_register_url(server_url)
     latest_version = get_auth_version(register_url)
     current_version = -1 if 'version' not in config else config['version']
 
