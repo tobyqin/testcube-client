@@ -78,8 +78,9 @@ def main():
         enable_debug_log()
 
     if args.register:
-        info = register_client(args.register, args.force)
-        logging.info('Registration success! Please continue your actions. <{}>'.format(info['token']))
+        register_client(args.register, args.force)
+        logging.info('Registration success! Please continue.')
+
     elif args.run:
         if args.start_run or args.finish_run:
             logging.error('Should not combine with --start-run or --finish-run argument!')

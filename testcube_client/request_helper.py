@@ -14,10 +14,10 @@ def get_register_url(server_url):
     return server_url, '{}{}'.format(server_url, 'client-register')
 
 
-def get_auth_version(url):
+def get_server_version(url):
     response = requests.get(url)
     try:
-        logging.debug('get_auth_version: {}'.format(response.text))
+        logging.debug('get_server_version: {}'.format(response.text))
         return int(response.text.replace('.', ''))  # e.g. '1.0.0' => 100
     except ValueError:
         return 0
@@ -26,7 +26,7 @@ def get_auth_version(url):
 def register_client(server_url, force=False):
     logging.debug('register_client: {}, force={}'.format(server_url, force))
     server_url, register_url = get_register_url(server_url)
-    latest_version = get_auth_version(register_url)
+    latest_version = get_server_version(register_url)
     current_version = -1 if 'version' not in config else config['version']
 
     # only skip register when user said force and version not updated
