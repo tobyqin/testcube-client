@@ -28,6 +28,13 @@ class RunStatus:
     Abandoned = 3
 
 
+def get_object_id(object_url):
+    """ 'http://.../api/run/123/' => 123"""
+    logging.debug('get_object_id: {}'.format(object_url))
+    url = object_url[:-1]
+    return int(url[url.rindex('/') + 1:])
+
+
 def get_run_url(run_obj):
     return run_obj['url'].replace('api/', '')[0:-1]
 
@@ -41,12 +48,14 @@ def run(result_xml_pattern, name=None, **kwargs):
 
 def start_run(team_name, product_name, product_version=None, run_name=None, **kwargs):
     """Will save current run id in config and return run url."""
+    logging.debug('start_run: {},{},{},{},{}'.format(team_name, product_name,
+                                                     product_version, run_name, kwargs))
 
     if not run_name:
         run_name = 'Tests running on {}'.format(config['host'])
 
     team_url = get_or_create_team(team_name)
-    product_url = get_or_create_product(product_name, product_version)
+    product_url = get_or_create_product(product_name, team_url, product_version)
     start_by = config['user']
     owner = kwargs.pop('owner', start_by)
 
@@ -73,11 +82,12 @@ def abort_run(run=None):
     run = client.patch(run['url'], data)
     config['current_run'] = run
     save_config()
-    logging.warn('Abandon run: {}'.format(run['url']))
+    logging.warning('Abandon run: {}'.format(run['url']))
 
 
 def finish_run(result_xml_pattern, run=None, **kwargs):
     """Follow up step to save run info after starting a run."""
+    logging.debug('finish_run: {},{},{}'.format(result_xml_pattern, run, kwargs))
     files = get_files(result_xml_pattern)
     results, info = get_results(files)
 
@@ -121,23 +131,28 @@ def get_or_create_team(name):
         return team['url']
 
 
-def get_or_create_product(name, version='latest'):
+def get_or_create_product(name, team_url, version='latest'):
     """return product url."""
-    data = {'name': name}
+    data = {'name': name, 'team': team_url}
 
     if version:
         data['version'] = version
 
     found = get_cache(API.product, **data)
+
     if found:
         return found['url']
 
+    data['team'] = get_object_id(team_url)
     found = client.get(API.product, data)
 
     if found['count']:
         add_cache(API.product, found['results'][0])
         return found['results'][0]['url']
+
     else:
+        # create the team
+        data['team'] = team_url
         product = client.post(API.product, data)
         add_cache(API.product, product)
         return product['url']
@@ -152,23 +167,23 @@ def get_or_create_testcase(name, full_name, team_url, product_url):
         return found['url']
 
     # team and product are not supported in query
-    del data['team']
-    del data['product']
+    data['team'] = get_object_id(team_url)
+    data['product'] = get_object_id(product_url)
     found = client.get(API.testcase, data)
 
     if found['count']:
         for tc in found['results']:
-            if tc['team'] == team_url and tc['product'] == product_url:
-                add_cache(API.testcase, tc)
-                return tc['url']
+            add_cache(API.testcase, tc)
+            return tc['url']
 
-    # create the testcase not found from cache or server
-    data['created_by'] = config['user']
-    data['team'] = team_url
-    data['product'] = product_url
-    testcase = client.post(API.testcase, data)
-    add_cache(API.testcase, testcase)
-    return testcase['url']
+    else:
+        # create the testcase not found from cache or server
+        data['created_by'] = config['user']
+        data['team'] = team_url
+        data['product'] = product_url
+        testcase = client.post(API.testcase, data)
+        add_cache(API.testcase, testcase)
+        return testcase['url']
 
 
 def get_or_create_client(name=None):

@@ -25,7 +25,7 @@ class TestCases(unittest.TestCase):
         enable_debug_log()
         register_client(server, force=True)
         self.team = business.get_or_create_team('Core')
-        self.product = business.get_or_create_product('TestCube')
+        self.product = business.get_or_create_product('TestCube', self.team)
         chdir(result_dir)
 
     def tearDown(self):

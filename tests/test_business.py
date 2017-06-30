@@ -23,7 +23,7 @@ class TestCases(unittest.TestCase):
         enable_debug_log()
         register_client(server, force=True)
         self.team = business.get_or_create_team('Core')
-        self.product = business.get_or_create_product('TestCube')
+        self.product = business.get_or_create_product('TestCube', self.team)
         chdir(xunit_dir)
 
     def tearDown(self):
@@ -38,15 +38,15 @@ class TestCases(unittest.TestCase):
         assert team == team1
 
     def test_get_or_create_product(self):
-        product = business.get_or_create_product('testcube')
+        product = business.get_or_create_product('testcube', self.team)
         logging.info(product)
         assert 'products/' in product
 
-        product1 = business.get_or_create_product('testcube', 'v1.0')
+        product1 = business.get_or_create_product('testcube', self.team, 'v1.0')
         assert 'products/' in product1
         assert product != product1
 
-        product2 = business.get_or_create_product('testcube', 'v1.0')
+        product2 = business.get_or_create_product('testcube', self.team, 'v1.0')
         assert product2 == product1
 
     def test_get_or_create_testcase(self):
