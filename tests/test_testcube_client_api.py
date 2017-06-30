@@ -9,12 +9,14 @@ import unittest
 
 from testcube_client import request_client as client
 from testcube_client.request_helper import *
+from testcube_client.settings import enable_debug_log
 
 server = 'http://127.0.0.1:8000'
 
 
 class TestCases(unittest.TestCase):
     def setUp(self):
+        enable_debug_log()
         register_client(server)
 
     def tearDown(self):
@@ -22,7 +24,7 @@ class TestCases(unittest.TestCase):
 
     def test_register_client(self):
         register_info = register_client(server)
-        print(register_info)
+        logging.info(register_info)
         assert register_info['client'] is not None
         assert register_info['token'] is not None
 
@@ -30,7 +32,7 @@ class TestCases(unittest.TestCase):
         api = 'teams'
         data = {'name': 'EggPlant', 'owner': 'toby.qin'}
         result = client.post(api, data)
-        print(result)
+        logging.info(result)
         assert result['name'] == data['name']
         assert result['owner'] == data['owner']
 
@@ -39,7 +41,7 @@ class TestCases(unittest.TestCase):
 
         api = 'teams'
         result = client.get(api, params={'name': 'EggPlant'})
-        print(result)
+        logging.info(result)
         assert result['count'] >= 1
         assert isinstance(result['results'], list)
         return result
@@ -56,12 +58,12 @@ class TestCases(unittest.TestCase):
 
         for team in teams:
             team_url = team['url']
-            print('update team: {}'.format(team_url))
+            logging.info('update team: {}'.format(team_url))
             client.put(team_url, data={'name': 'Dog'})
 
         new_teams = client.get(api, params={'name': 'Dog'})['results']
         for team in new_teams:
-            print(team)
+            logging.info(team)
             assert team['name'] == 'Dog'
 
     def test_api_delete(self):
@@ -85,7 +87,7 @@ class TestCases(unittest.TestCase):
         try:
             client.delete(deleted_team['url'])
         except ValueError as e:
-            print('cannot deleted twice! ' + str(e))
+            logging.warn('cannot deleted twice! ' + str(e))
 
 
 if __name__ == '__main__':

@@ -22,6 +22,7 @@ A Python client for testcube.
 """
 
 import argparse
+import logging
 
 from . import business
 from .request_helper import register_client
@@ -60,9 +61,9 @@ def action(func, *args, **kwargs):
         return 0
 
     except Exception as e:
-        print('Action failed!!!')
+        logging.error('Action failed!!!')
         message = type(e).__name__ + ': ' + str(e)
-        print(message.decode('utf8') if hasattr(message, 'decode') else message)
+        logging.error(message.decode('utf8') if hasattr(message, 'decode') else message)
         business.abort_run()
         raise e
 
@@ -71,14 +72,14 @@ def main():
     args = parser.parse_args()
     if args.register:
         info = register_client(args.register, args.force)
-        print('Registration success! Please continue your actions. <{}>'.format(info['token']))
+        logging.info('Registration success! Please continue your actions. <{}>'.format(info['token']))
     elif args.run:
         if args.start_run or args.finish_run:
-            print('Should not combine with --start-run or --finish-run argument!')
+            logging.error('Should not combine with --start-run or --finish-run argument!')
             return -1
 
         if not args.team or not args.product or not args.xunit_files:
-            print('Must specify --team, --product and --xunit-files!')
+            logging.error('Must specify --team, --product and --xunit-files!')
             return -1
 
         action(business.run,
@@ -91,11 +92,11 @@ def main():
 
     elif args.start_run:
         if args.run or args.finish_run:
-            print('Should not combine with --finish-run or --run argument!')
+            logging.error('Should not combine with --finish-run or --run argument!')
             return -1
 
         if not args.team or not args.product:
-            print('Must specify team and product!')
+            logging.error('Must specify team and product!')
             return -1
 
         action(business.start_run,
@@ -106,11 +107,11 @@ def main():
 
     elif args.finish_run:
         if args.run or args.start_run:
-            print('Should not combine with --start-run or --run argument!')
+            logging.error('Should not combine with --start-run or --run argument!')
             return -1
 
         if not args.xunit_files:
-            print('Must specify --xunit-files!')
+            logging.error('Must specify --xunit-files!')
             return -1
 
         action(business.finish_run,

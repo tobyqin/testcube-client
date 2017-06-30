@@ -1,13 +1,40 @@
+import logging
+
 import requests
 
 from .settings import config, save_config
 
 
+def get_register_url(server_url):
+    assert isinstance(server_url, str)
+
+    if not server_url.endswith('/'):
+        server_url += '/'
+
+    return '{}{}'.format(server_url, 'client-register')
+
+
+def get_auth_version(url):
+    response = requests.get(url)
+    try:
+        logging.debug('get_auth_version: {}'.format(response.text))
+        return int(response.text.replace('.', ''))  # e.g. '1.0.0' => 100
+    except ValueError:
+        return 0
+
+
 def register_client(server_url, force=False):
-    if 'token' in config and not force:
-        print('Already register to: {}'.format(config['server']))
+    logging.debug('register_client: {}, force={}'.format(server_url, force))
+    register_url = get_register_url(server_url)
+    latest_version = get_auth_version(register_url)
+    current_version = -1 if 'version' not in config else config['version']
+
+    # only skip register when user said force and version not updated
+    if current_version == latest_version and not force:
+        logging.info('Already register to: {}'.format(config['server']))
         return {'client': config['client'], 'token': config['token']}
 
+    # standard register steps
     client_type = 'testcube_python_client'
 
     data = {'client_type': client_type,
@@ -15,24 +42,22 @@ def register_client(server_url, force=False):
             'client_user': config['user'],
             'platform': config['platform']}
 
-    assert isinstance(server_url, str)
-
-    if not server_url.endswith('/'):
-        server_url += '/'
-
-    register_url = server_url + 'client-register'
     response = requests.post(register_url, data=data)
     assert response.status_code == 200, 'Failed to register client, response: ' + response.text
 
     info = response.json()
 
+    # generate the config from response info
     config['server'] = server_url
+    config['version'] = latest_version
     config.update(info)
+
+    # clear existed config
     config['cache'] = []
     config.pop('current_run', None)
 
     save_config()
-    print('Register to: {}'.format(config['server']))
+    logging.info('Register to: {}'.format(config['server']))
     return info
 
 

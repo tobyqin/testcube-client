@@ -12,6 +12,7 @@ from testcube_client import business
 from testcube_client import request_client as client
 from testcube_client.request_helper import *
 from testcube_client.result_parser import get_results
+from testcube_client.settings import enable_debug_log
 from tests.default.test_xunit_parser import xunit_xml, xunit_dir
 
 server = 'http://127.0.0.1:8000'
@@ -19,6 +20,7 @@ server = 'http://127.0.0.1:8000'
 
 class TestCases(unittest.TestCase):
     def setUp(self):
+        enable_debug_log()
         register_client(server, force=True)
         self.team = business.get_or_create_team('Core')
         self.product = business.get_or_create_product('TestCube')
@@ -29,7 +31,7 @@ class TestCases(unittest.TestCase):
 
     def test_get_or_create_team(self):
         team = business.get_or_create_team('Dog')
-        print(team)
+        logging.info(team)
         assert 'teams/' in team
 
         team1 = business.get_or_create_team('Dog')
@@ -37,7 +39,7 @@ class TestCases(unittest.TestCase):
 
     def test_get_or_create_product(self):
         product = business.get_or_create_product('testcube')
-        print(product)
+        logging.info(product)
         assert 'products/' in product
 
         product1 = business.get_or_create_product('testcube', 'v1.0')
@@ -52,7 +54,7 @@ class TestCases(unittest.TestCase):
                                               full_name='test.testcube',
                                               team_url=self.team,
                                               product_url=self.product)
-        print(obj)
+        logging.info(obj)
         assert 'cases/' in obj
 
         val1 = business.get_or_create_testcase(name='testcube test1',
@@ -70,18 +72,18 @@ class TestCases(unittest.TestCase):
 
     def test_get_or_create_client(self):
         c = business.get_or_create_client()
-        print(c)
+        logging.info(c)
         assert 'clients/' in c
 
         detail = client.get_obj(c)
-        print(detail)
+        logging.info(detail)
         assert detail['name'] is not None
 
     def test_start_run(self):
         run_url = business.start_run(team_name='Core',
                                      product_name='TestCube')
 
-        print(run_url)
+        logging.info(run_url)
         assert 'current_run' in config
         assert config['current_run']['url'] == run_url
         return run_url
@@ -91,7 +93,7 @@ class TestCases(unittest.TestCase):
                                      product_name='TestCube',
                                      run_name='my unit test run')
 
-        print(run_url)
+        logging.info(run_url)
         assert 'current_run' in config
         assert config['current_run']['url'] == run_url
 
@@ -104,7 +106,7 @@ class TestCases(unittest.TestCase):
 
         for result in results:
             r = business.create_result(run, result)
-            print(r)
+            logging.info(r)
 
 
 if __name__ == '__main__':

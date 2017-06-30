@@ -1,11 +1,12 @@
+import logging
 import unittest
 
-from testcube_client.settings import get_cache, add_cache, delete_cache
+from testcube_client.settings import get_cache, add_cache, delete_cache, enable_debug_log
 
 
 class TestCases(unittest.TestCase):
     def setUp(self):
-        pass
+        enable_debug_log()
 
     def tearDown(self):
         pass
@@ -19,13 +20,13 @@ class TestCases(unittest.TestCase):
         add_cache('User', obj)
 
         obj1 = get_cache('User', name='Toby')
-        print(obj1)
+        logging.info(obj1)
 
         add_cache('User', obj)
 
         try:
             get_cache('User', name='Toby')
         except ValueError as e:
-            print(e)
+            logging.info(e)
 
         delete_cache('User', name='Toby')

@@ -1,8 +1,10 @@
+import logging
 import unittest
 from os import chdir
 from os.path import dirname, join, curdir, realpath
 
 from testcube_client.result_parser import get_files, get_results
+from testcube_client.settings import enable_debug_log
 from testcube_client.xunitparser import parse
 
 test_dir = dirname(dirname(__file__))
@@ -12,7 +14,7 @@ xunit_xml = join(xunit_dir, 'results.xml')
 
 class TestCases(unittest.TestCase):
     def setUp(self):
-        pass
+        enable_debug_log()
 
     def tearDown(self):
         pass
@@ -23,13 +25,13 @@ class TestCases(unittest.TestCase):
         assert isinstance(result, unittest.TestResult)
 
         passed = result.passed[0]
-        print(passed)
+        logging.info(passed)
 
         skipped = result.skipped[0]
-        print(skipped)
+        logging.info(skipped)
 
         failure = result.failures[0]
-        print(failure)
+        logging.info(failure)
 
         error = result.errors
         assert len(error) == 0
@@ -39,12 +41,12 @@ class TestCases(unittest.TestCase):
 
     def test_get_xml_by_pattern(self):
         chdir(dirname(__file__))
-        print(realpath(curdir))
+        logging.info(realpath(curdir))
         files = get_files('../**/*.xml')
         assert len(files) == 2
 
         chdir(xunit_dir)
-        print(realpath(curdir))
+        logging.info(realpath(curdir))
         files = get_files('*.xml')
         assert len(files) == 2
 
@@ -52,7 +54,7 @@ class TestCases(unittest.TestCase):
         assert len(files) == 1
 
         chdir(test_dir)
-        print(realpath(curdir))
+        logging.info(realpath(curdir))
         files = get_files('*.xml')
         assert len(files) == 0
 
@@ -60,7 +62,7 @@ class TestCases(unittest.TestCase):
         assert len(files) == 2
 
         chdir(dirname(test_dir))
-        print(realpath(curdir))
+        logging.info(realpath(curdir))
 
         files = get_files('**/*.xml')
         assert len(files) == 2
@@ -69,16 +71,16 @@ class TestCases(unittest.TestCase):
         chdir(dirname(__file__))
         files = get_files('../**/re*.xml')
         results, info = get_results(files)
-        print(results)
+        logging.info(results)
         assert len(results) == 3
-        print(info)
+        logging.info(info)
         assert len(info['files']) == 1
         assert info['duration'] > 0
 
         files = get_files('../**/*.xml')
         results, info = get_results(files)
         assert len(results) == 10
-        print(info['start_time'], info['end_time'])
+        logging.info('%s, %s', info['start_time'], info['end_time'])
         assert info['start_time'] < info['end_time']
 
 

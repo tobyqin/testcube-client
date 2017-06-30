@@ -12,6 +12,7 @@ from faker import Faker
 
 from testcube_client import business
 from testcube_client.request_helper import *
+from testcube_client.settings import enable_debug_log
 
 fake = Faker()
 
@@ -21,6 +22,7 @@ result_dir = r'C:\temp'
 
 class TestCases(unittest.TestCase):
     def setUp(self):
+        enable_debug_log()
         register_client(server, force=True)
         self.team = business.get_or_create_team('Core')
         self.product = business.get_or_create_product('TestCube')
@@ -34,7 +36,7 @@ class TestCases(unittest.TestCase):
                                      product_name='TestCube',
                                      run_name=fake.text(100))
 
-        print(run_url)
+        logging.info(run_url)
 
         business.finish_run('re*.xml')
 

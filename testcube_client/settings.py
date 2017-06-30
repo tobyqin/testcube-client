@@ -1,7 +1,9 @@
 import getpass
 import json
+import logging
 import platform
 import socket
+import sys
 from codecs import open
 from os.path import exists, join, expanduser
 
@@ -9,9 +11,17 @@ config = {'cache': []}
 
 home_dir = expanduser('~')
 config_file = join(home_dir, '.testcube_client.json')
+logging.basicConfig(stream=sys.stdout,
+                    format='%(asctime)s %(levelname)s: %(message)s',
+                    level=logging.INFO)
+
+
+def enable_debug_log():
+    logging.root.setLevel(logging.DEBUG)
 
 
 def add_cache(type, obj):
+    logging.debug('add_cache: {} - {}'.format(type, obj))
     if isinstance(obj, list):
         for i in obj:
             add_cache(type, i)
@@ -31,6 +41,7 @@ def add_cache(type, obj):
 
 def get_cache(type, expected_one=True, **filters):
     """example: get_cache(type='User', name='Toby', age=18)"""
+    logging.debug('get_cache: {} - {}'.format(type, filters))
     filters['__type__'] = type
     matched = []
     for c in config['cache']:
@@ -55,6 +66,7 @@ def get_cache(type, expected_one=True, **filters):
 
 def delete_cache(type, **filters):
     """example: delete_cache(type='User', name='Toby',age=18)"""
+    logging.debug('delete_cache: {} - {}'.format(type, filters))
     filters['__type__'] = type
     not_matched = []
     for c in config['cache']:
@@ -70,6 +82,7 @@ def delete_cache(type, **filters):
 
 
 def load_config():
+    logging.debug('load_config')
     if exists(config_file):
         with open(config_file, encoding='utf-8') as f:
             content = f.read()
@@ -82,6 +95,7 @@ def load_config():
 
 
 def save_config():
+    logging.debug('save_config')
     with open(config_file, mode='w', encoding='utf-8') as f:
         f.write(json.dumps(config, indent=4))
 
