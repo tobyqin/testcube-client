@@ -26,6 +26,7 @@ import logging
 
 from . import business
 from .request_helper import register_client
+from .settings import enable_debug_log
 
 parser = argparse.ArgumentParser(usage=__doc__)
 
@@ -53,6 +54,9 @@ parser.add_argument('-v', '--product-version',
 parser.add_argument('-f', '--force',
                     help='Force the action, support --register command.',
                     action='store_true')
+parser.add_argument('-vb', '--verbose',
+                    help='Show verbose log info.',
+                    action='store_true')
 
 
 def action(func, *args, **kwargs):
@@ -70,6 +74,9 @@ def action(func, *args, **kwargs):
 
 def main():
     args = parser.parse_args()
+    if args.verbose:
+        enable_debug_log()
+
     if args.register:
         info = register_client(args.register, args.force)
         logging.info('Registration success! Please continue your actions. <{}>'.format(info['token']))
