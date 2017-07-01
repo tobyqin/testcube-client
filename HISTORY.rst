@@ -2,6 +2,10 @@
 History
 =======
 
+0.4.0 (2017-07-01)
+------------------
+* Update due to testcube model changed, not compatible with prev versions
+
 0.3.3 (2017-06-29)
 ------------------
 * Improve run url in output.
