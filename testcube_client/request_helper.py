@@ -3,6 +3,7 @@ import logging
 import requests
 
 from .settings import config, save_config
+from .utils import log_params
 
 
 def get_register_url(server_url):
@@ -23,8 +24,8 @@ def get_server_version(url):
         return 0
 
 
+@log_params
 def register_client(server_url, force=False):
-    logging.debug('register_client: {}, force={}'.format(server_url, force))
     server_url, register_url = get_register_url(server_url)
     latest_version = get_server_version(register_url)
     current_version = -1 if 'version' not in config else config['version']

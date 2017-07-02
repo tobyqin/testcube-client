@@ -5,6 +5,7 @@ import arrow
 from . import request_client as client
 from .result_parser import get_results, get_files
 from .settings import API, config, save_config, get_cache, add_cache
+from .utils import get_default_run_name, get_object_id, get_run_url, log_params, as_config
 
 outcome_map = {'success': 0,
                'failure': 1,
@@ -28,17 +29,7 @@ class RunStatus:
     Abandoned = 3
 
 
-def get_object_id(object_url):
-    """ 'http://.../api/run/123/' => 123"""
-    logging.debug('get_object_id: {}'.format(object_url))
-    url = object_url[:-1]
-    return int(url[url.rindex('/') + 1:])
-
-
-def get_run_url(run_obj):
-    return run_obj['url'].replace('api/', '')[0:-1]
-
-
+@log_params
 def run(result_xml_pattern, name=None, **kwargs):
     """One step to save a run with multiple xml files."""
 
@@ -46,18 +37,17 @@ def run(result_xml_pattern, name=None, **kwargs):
     finish_run(result_xml_pattern=result_xml_pattern, guess_start_time=True)
 
 
+@log_params
 def start_run(team_name, product_name, product_version=None, run_name=None, **kwargs):
     """Will save current run id in config and return run url."""
-    logging.debug('start_run: {},{},{},{},{}'.format(team_name, product_name,
-                                                     product_version, run_name, kwargs))
 
     if not run_name:
-        run_name = 'Tests running on {}'.format(config['host'])
+        run_name = get_default_run_name()
 
     team_url = get_or_create_team(team_name)
     product_url = get_or_create_product(product_name, team_url, product_version)
     start_by = config['user']
-    owner = kwargs.pop('owner', start_by)
+    owner = kwargs.pop('owner', config['current_product']['owner']) or start_by
 
     data = {'team': team_url, 'product': product_url,
             'start_by': start_by, 'owner': owner,
@@ -73,6 +63,7 @@ def start_run(team_name, product_name, product_version=None, run_name=None, **kw
     return run['url']
 
 
+@log_params
 def abort_run(run=None):
     if not run:
         assert 'current_run' in config, 'Seems like you never start a run!'
@@ -85,9 +76,9 @@ def abort_run(run=None):
     logging.warning('Abandon run: {}'.format(run['url']))
 
 
+@log_params
 def finish_run(result_xml_pattern, run=None, **kwargs):
     """Follow up step to save run info after starting a run."""
-    logging.debug('finish_run: {},{},{}'.format(result_xml_pattern, run, kwargs))
     files = get_files(result_xml_pattern)
     results, info = get_results(files)
 
@@ -112,99 +103,82 @@ def finish_run(result_xml_pattern, run=None, **kwargs):
     logging.info('Finish run: {}'.format(get_run_url(run)))
 
 
+def get_or_create_object(api_url, data, fix_fields=None, extra_data=None):
+    fields = {}
+    found = get_cache(api_url, **data)
+
+    if found:  # search from cache
+        return found
+
+    if fix_fields:  # convert instance url to id when get from server
+        for f in fix_fields:
+            fields[f] = (data[f], get_object_id(data[f]))
+            data[f] = fields[f][1]
+
+    found = client.get(api_url, data)
+
+    if found['count']:  # search from server
+        add_cache(api_url, found['results'][0])
+        return found['results'][0]
+
+
+    else:  # create a new object
+
+        if fix_fields:  # use instance url to create the object
+            for f in fix_fields:
+                data[f] = fields[f][0]
+
+        if extra_data:  # extra fields required
+            data.update(extra_data)
+
+        object = client.post(api_url, data)
+        add_cache(api_url, object)
+        return object
+
+
+@as_config('current_team', 'url')
 def get_or_create_team(name):
     """return team url."""
     data = {'name': name}
-    found = get_cache(API.team, **data)
-
-    if found:
-        return found['url']
-
-    found = client.get(API.team, data)
-
-    if found['count']:
-        add_cache(API.team, found['results'][0])
-        return found['results'][0]['url']
-    else:
-        team = client.post(API.team, data)
-        add_cache(API.team, team)
-        return team['url']
+    return get_or_create_object(API.team, data,
+                                extra_data={'owner': config['user']})
 
 
+@as_config('current_product', 'url')
 def get_or_create_product(name, team_url, version='latest'):
     """return product url."""
     data = {'name': name, 'team': team_url}
 
+    team = get_cache(API.team, url=team_url)
+    if not team:
+        team = client.get_obj(team_url)
+
     if version:
         data['version'] = version
 
-    found = get_cache(API.product, **data)
-
-    if found:
-        return found['url']
-
-    data['team'] = get_object_id(team_url)
-    found = client.get(API.product, data)
-
-    if found['count']:
-        add_cache(API.product, found['results'][0])
-        return found['results'][0]['url']
-
-    else:
-        # create the team
-        data['team'] = team_url
-        product = client.post(API.product, data)
-        add_cache(API.product, product)
-        return product['url']
+    return get_or_create_object(API.product, data,
+                                fix_fields=['team'],
+                                extra_data={'owner': team['owner'] or config['user']})
 
 
 def get_or_create_testcase(name, full_name, team_url, product_url):
     """return testcase url."""
     data = {'name': name, 'full_name': full_name, 'team': team_url, 'product': product_url}
 
-    found = get_cache(API.testcase, **data)
-    if found:
-        return found['url']
+    product = get_cache(API.product, url=product_url)
+    if not product:
+        product = client.get_obj(product_url)
 
-    # team and product are not supported in query
-    data['team'] = get_object_id(team_url)
-    data['product'] = get_object_id(product_url)
-    found = client.get(API.testcase, data)
-
-    if found['count']:
-        for tc in found['results']:
-            add_cache(API.testcase, tc)
-            return tc['url']
-
-    else:
-        # create the testcase not found from cache or server
-        data['created_by'] = config['user']
-        data['team'] = team_url
-        data['product'] = product_url
-        testcase = client.post(API.testcase, data)
-        add_cache(API.testcase, testcase)
-        return testcase['url']
+    owner = product['owner'] or config['user']
+    return get_or_create_object(API.testcase, data,
+                                fix_fields=['team', 'product'],
+                                extra_data={'created_by': config['user'], 'owner': owner})['url']
 
 
 def get_or_create_client(name=None):
     """return client url."""
-    if not name:
-        name = config['host']
-
-    data = {'name': name}
-    found = get_cache(API.client, **data)
-    if found:
-        return found['url']
-
-    found = client.get(API.client, data)
-
-    if found['count']:
-        add_cache(API.client, found['results'][0])
-        return found['results'][0]['url']
-
-    c = client.post(API.client, data)
-    add_cache(API.client, c)
-    return c['url']
+    data = {'name': name or config['host']}
+    return get_or_create_object(API.client, data)['url']
 
 
 def create_result(run, result):
