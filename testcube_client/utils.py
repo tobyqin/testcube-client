@@ -10,6 +10,13 @@ def get_default_run_name():
     return environ.get('JOB_NAME', run_name)
 
 
+def get_run_source():
+    """try to get run source link and name."""
+    name = 'Jenkins' if environ.get('JENKINS_HOME', None) else 'Build'
+    link = environ.get('BUILD_URL', None)
+    return link, name
+
+
 def get_object_id(object_url):
     """ 'http://.../api/run/123/' => 123"""
     url = object_url[:-1]

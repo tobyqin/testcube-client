@@ -108,3 +108,5 @@ class API:
     issue = 'issues'
     analysis = 'analysis'
     error = 'errors'
+    run_source = 'run_sources'
+    result_file = 'result_files'

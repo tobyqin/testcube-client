@@ -1,11 +1,9 @@
-import logging
-
 import arrow
 
 from . import request_client as client
 from .result_parser import get_results, get_files
-from .settings import API, config, save_config, get_cache, add_cache
-from .utils import get_default_run_name, get_object_id, get_run_url, log_params, as_config
+from .settings import API, save_config, get_cache, add_cache
+from .utils import *
 
 outcome_map = {'success': 0,
                'failure': 1,
@@ -60,6 +58,8 @@ def start_run(team_name, product_name, product_version=None, run_name=None, **kw
     config['current_run'] = run
     save_config()
     logging.info('Start new run: {}'.format(get_run_url(run)))
+
+    add_run_source(run['url'])
     return run['url']
 
 
@@ -227,3 +227,11 @@ def create_error(error_info):
 
 def rerun_result(old_result_id, result):
     pass
+
+
+def add_run_source(run_url):
+    link, name = get_run_source()
+    if link:
+        data = {'link': link, 'run': run_url, 'name': name}
+        source = client.post(API.run_source, data=data)
+        return source['url']
