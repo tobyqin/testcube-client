@@ -47,7 +47,7 @@ def start_run(team_name, product_name, product_version=None, run_name=None, **kw
     start_by = config['user']
     owner = kwargs.pop('owner', config['current_product']['owner']) or start_by
 
-    data = {'team': team_url, 'product': product_url,
+    data = {'product': product_url,
             'start_by': start_by, 'owner': owner,
             'name': run_name, 'state': RunState.Starting}
 
@@ -161,9 +161,9 @@ def get_or_create_product(name, team_url, version='latest'):
                                 extra_data={'owner': team['owner'] or config['user']})
 
 
-def get_or_create_testcase(name, full_name, team_url, product_url):
+def get_or_create_testcase(name, full_name, product_url):
     """return testcase url."""
-    data = {'name': name, 'full_name': full_name, 'team': team_url, 'product': product_url}
+    data = {'name': name, 'full_name': full_name, 'product': product_url}
 
     product = get_cache(API.product, url=product_url)
     if not product:
@@ -171,7 +171,7 @@ def get_or_create_testcase(name, full_name, team_url, product_url):
 
     owner = product['owner'] or config['user']
     return get_or_create_object(API.testcase, data,
-                                fix_fields=['team', 'product'],
+                                fix_fields=['product'],
                                 extra_data={'created_by': config['user'], 'owner': owner})['url']
 
 
@@ -186,7 +186,7 @@ def create_result(run, result):
     name = result.methodname
     fullname = '{}.{}'.format(result.classname, result.methodname)
 
-    testcase_url = get_or_create_testcase(name, fullname, run['team'], run['product'])
+    testcase_url = get_or_create_testcase(name, fullname, run['product'])
     client_url = get_or_create_client()
     duration = result.time.total_seconds()
     outcome = outcome_map[result.result]

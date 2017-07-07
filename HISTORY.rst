@@ -2,7 +2,7 @@
 History
 =======
 
-0.4.0 (2017-07-01)
+0.5.0 (2017-07-07)
 ------------------
 * Update due to testcube model changed, not compatible with prev versions
 

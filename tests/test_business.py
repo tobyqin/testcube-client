@@ -52,21 +52,18 @@ class TestCases(unittest.TestCase):
     def test_get_or_create_testcase(self):
         obj = business.get_or_create_testcase(name='testcube test',
                                               full_name='test.testcube',
-                                              team_url=self.team,
                                               product_url=self.product)
         logging.info(obj)
         assert 'cases/' in obj
 
         val1 = business.get_or_create_testcase(name='testcube test1',
                                                full_name='test.testcube',
-                                               team_url=self.team,
                                                product_url=self.product)
         assert 'cases/' in val1
         assert obj != val1
 
         val2 = business.get_or_create_testcase(name='testcube test1',
                                                full_name='test.testcube',
-                                               team_url=self.team,
                                                product_url=self.product)
         assert val2 == val1
 
