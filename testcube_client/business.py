@@ -232,6 +232,10 @@ def rerun_result(old_result_id, result):
 def add_run_source(run_url):
     link, name = get_run_source()
     if link:
-        data = {'link': link, 'run': run_url, 'name': name}
-        source = client.post(API.run_source, data=data)
+        data = {'link': link, 'name': name}
+        source = client.post(API.object_source, data=data)
+
+        data = {'source': source['url']}
+        client.patch(run_url, data)
+
         return source['url']
