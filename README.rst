@@ -40,7 +40,7 @@ Register to Server
 
 You must have a TestCube_ server deployed at somewhere, then run ``--register`` command.::
 
-  testcube-client register http://testcube-server:8000
+  testcube-client --register http://testcube-server:8000
 
 Upload Run Results
 ~~~~~~~~~~~~~~~~~~
