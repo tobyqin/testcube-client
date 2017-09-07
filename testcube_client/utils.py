@@ -1,5 +1,8 @@
 import logging
 from os import environ
+from os.path import basename, getsize, getmtime, splitext, exists
+
+import arrow
 
 from .settings import config
 
@@ -50,3 +53,17 @@ def as_config(name, return_field=None):
         return _wrapper
 
     return wrapper
+
+
+def get_file_info(file_path):
+    valid_file_types = ['.png', '.jpg', '.jpeg', '.bmp', '.gif', '.txt', '.log', '.csv']
+    if not exists(file_path):
+        logging.error('File not found: {}'.format(file_path))
+
+    elif splitext(file_path)[1].lower() not in valid_file_types:
+        logging.error('Invalid file type: {}'.format(splitext(file_path)[1]))
+
+    else:
+        return {'name': basename(file_path),
+                'file_byte_size': getsize(file_path),
+                'file_created_time': str(arrow.get(getmtime(file_path)))}

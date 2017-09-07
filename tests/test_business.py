@@ -11,7 +11,7 @@ from os import chdir
 from testcube_client import business
 from testcube_client import request_client as client
 from testcube_client.request_helper import *
-from testcube_client.result_parser import get_results
+from testcube_client.result_parser import get_results, get_files
 from testcube_client.settings import enable_debug_log
 from tests.default.test_xunit_parser import xunit_xml, xunit_dir
 
@@ -104,6 +104,24 @@ class TestCases(unittest.TestCase):
         for result in results:
             r = business.create_result(run, result)
             logging.info(r)
+
+    def test_upload_file_pattern(self):
+        run_url = business.start_run(team_name='Core',
+                                     product_name='TestCube',
+                                     run_name='my unit test run')
+
+        for file in get_files('*.png'):
+            business.upload_result_file(file, run_url)
+
+        for file in get_files('*.xml'):
+            business.upload_result_file(file, run_url)
+
+    def test_upload_file_batch(self):
+        business.start_run(team_name='Core',
+                           product_name='TestCube',
+                           run_name='my unit test run')
+
+        business.upload_files('*.png')
 
 
 if __name__ == '__main__':

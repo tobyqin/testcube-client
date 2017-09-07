@@ -19,6 +19,10 @@ A Python client for testcube.
 
   testcube-client --run -n "smoke tests for testcube" -t XPower -p TestCube -v v1.0 -x "**/smoke*.xml"
 
+4. If your result will generate files, for example screenshots, then you can upload them as well.
+
+  testcube-client --run -n "test run" -t Core -p TestCube -x "**/smoke*.xml" -i "**/out/*.png"
+
 """
 
 import argparse
@@ -43,6 +47,8 @@ parser.add_argument('-finish', '--finish-run',
                     action='store_true')
 parser.add_argument('-x', '--xunit-files',
                     help='Specify the xunit xml results, e.g "**/result*.xml"')
+parser.add_argument('-i', '--result-files',
+                    help='Specify the result files, e.g "**/output/**/*.png"')
 parser.add_argument('-n', '--name',
                     help='Specify the run name.')
 parser.add_argument('-t', '--team',
@@ -77,10 +83,12 @@ def main():
     if args.verbose:
         enable_debug_log()
 
+    # register should be first step
     if args.register:
         register_client(args.register, args.force)
         logging.info('Registration success! Please continue.')
 
+    # batch create a test run: --run argument
     elif args.run:
         if args.start_run or args.finish_run:
             logging.error('Should not combine with --start-run or --finish-run argument!')
@@ -97,7 +105,7 @@ def main():
                run_name=args.name,
                result_xml_pattern=args.xunit_files)
 
-
+    # when only specify --start-run argument
     elif args.start_run:
         if args.run or args.finish_run:
             logging.error('Should not combine with --finish-run or --run argument!')
@@ -113,6 +121,7 @@ def main():
                product_version=args.product_version,
                run_name=args.name)
 
+    # when only specify --finish run argument
     elif args.finish_run:
         if args.run or args.start_run:
             logging.error('Should not combine with --start-run or --run argument!')
@@ -124,6 +133,10 @@ def main():
 
         action(business.finish_run,
                result_xml_pattern=args.xunit_files)
+
+    # when user need to upload result files: --result-files
+    if args.result_files:
+        action(business.upload_files, file_patterns=args.result_files)
 
 
 if __name__ == "__main__":

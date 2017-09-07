@@ -1,5 +1,3 @@
-import arrow
-
 from . import request_client as client
 from .result_parser import get_results, get_files
 from .settings import API, save_config, get_cache, add_cache
@@ -232,10 +230,34 @@ def rerun_result(old_result_id, result):
 def add_run_source(run_url):
     link, name = get_run_source()
     if link:
+        # create the source object
         data = {'link': link, 'name': name}
         source = client.post(API.object_source, data=data)
 
+        # link the source to a run
         data = {'source': source['url']}
         client.patch(run_url, data)
 
         return source['url']
+
+
+def upload_files(file_patterns):
+    run = config.get('current_run')
+    if not run:
+        raise RuntimeError('Should start a run at first!')
+
+    for file in get_files(file_patterns):
+        upload_result_file(file, run['url'])
+
+
+def upload_result_file(file_path, run_url):
+    """to upload single result file."""
+    data = get_file_info(file_path)
+    if data:
+        data['run'] = run_url
+        files = {'file': open(file_path, 'rb')}
+        file = client.post(API.result_file, data=data, files=files)
+        logging.info('File uploaded: {}'.format(file_path))
+        return file['url']
+    else:
+        logging.warning('File skipped: {}'.format(file_path))

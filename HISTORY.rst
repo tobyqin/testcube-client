@@ -2,6 +2,10 @@
 History
 =======
 
+0.6.0 (2017-09-07)
+------------------
+* Able to upload result files using argument --result-files
+
 0.5.0 (2017-07-07)
 ------------------
 * Update due to testcube model changed, not compatible with prev versions

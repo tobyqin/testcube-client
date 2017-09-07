@@ -95,6 +95,7 @@ def save_config():
         f.write(json.dumps(config, indent=4))
 
 
+# always load config when app start (import happens)
 load_config()
 
 

@@ -16,9 +16,9 @@ def get_obj(obj_url):
     return api_result(response)
 
 
-def post(api_endpoint, data):
+def post(api_endpoint, data, **kwargs):
     """create to list view"""
-    response = requests.post(api_url(api_endpoint), data=data, auth=api_auth())
+    response = requests.post(api_url(api_endpoint), data=data, auth=api_auth(), **kwargs)
     return api_result(response)
 
 
