@@ -21,7 +21,8 @@ def get_files(pattern):
     :return:matched files
     """
 
-    return [realpath(p) for p in glob2.glob(pattern)]
+    files = [realpath(p) for p in glob2.glob(pattern)]
+    return list(set(files))
 
 
 def open_xml(file):
