@@ -64,6 +64,21 @@ Another choice is using ``--run`` command to upload test results like a batch.::
 With this choice, TestCube will use current time as ``end_time`` for the run, and guess ``start_time``
 according to run duration.
 
+Upload Result Files
+~~~~~~~~~~~~~~~~~~~
+
+Sometimes your test will generate result files, for example, screenshots, log files. These files are useful
+when analyze test failure, so we can upload them to TestCube as well::
+
+  # call --result-files to upload files
+  test-client --result-files "**/*.png"
+
+  # use -i as a shortcut
+  test-cube -i "**/*.jpg"
+
+Note: your result file should contains test case name so that TestCube can link these to a result,
+e.g. if your test case name is "test_student_login", then the result file should like "test_student_login_failed.png".
+
 Command-line Options
 ~~~~~~~~~~~~~~~~~~~~
 
