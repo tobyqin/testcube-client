@@ -78,16 +78,18 @@ The optional arguments::
   -start, --start-run   Start a run, require team, product and a name.
   -finish, --finish-run
                         Finish a run, require xunit files.
-
   -x XUNIT_FILES, --xunit-files XUNIT_FILES
                         Specify the xunit xml results, e.g "**/result*.xml"
+  -i RESULT_FILES, --result-files RESULT_FILES
+                        Specify the result files, e.g "**/output/**/*.png"
   -n NAME, --name NAME  Specify the run name.
   -t TEAM, --team TEAM  Specify the team name.
   -p PRODUCT, --product PRODUCT
                         Specify the product name.
   -v PRODUCT_VERSION, --product-version PRODUCT_VERSION
                         Specify the product version. [Optional]
-  -f, --force           Force the command, when force register, will clear all caches.
+  -f, --force           Force the action, support --register command.
+  -vb, --verbose        Show verbose log info.
 
 
 .. _TestCube: https://github.com/tobyqin/testcube
