@@ -63,6 +63,9 @@ def get_file_info(file_path):
     elif splitext(file_path)[1].lower() not in valid_file_types:
         logging.error('Invalid file type: {}'.format(splitext(file_path)[1]))
 
+    elif getsize(file_path) == 0:
+        logging.error('File is empty: {}'.format(file_path))
+
     else:
         return {'name': basename(file_path),
                 'file_byte_size': getsize(file_path),
