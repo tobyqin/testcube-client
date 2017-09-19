@@ -71,13 +71,19 @@ Sometimes your test will generate result files, for example, screenshots, log fi
 when analyze test failure, so we can upload them to TestCube as well::
 
   # call --result-files to upload files
-  test-client --result-files "**/*.png"
+  testcube-client --result-files "**/*.png"
 
   # use -i as a shortcut
-  test-cube -i "**/*.jpg"
+  testcube-client -i "**/*.jpg"
 
 Note: your result file should contains test case name so that TestCube can link these to a result,
 e.g. if your test case name is "test_student_login", then the result file should like "test_student_login_failed.png".
+
+If you want to rerun a result by id, you can run the case by your script and generate xml files again,
+then upload your files again::
+
+  # call --rerun-result to refresh a result
+  testcube-client --rerun-result 12345 -x "**/*.xml" -i "**/*.png"
 
 Command-line Options
 ~~~~~~~~~~~~~~~~~~~~

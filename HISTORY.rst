@@ -2,9 +2,15 @@
 History
 =======
 
+0.6.2 (2017-09-19)
+------------------
+* Able to rerun a result by id, for example:
+* testcube-client --rerun-result 12345 -x "**/*.xml"
+
 0.6.0 (2017-09-07)
 ------------------
 * Able to upload result files using argument --result-files
+* testcube-client --result-files "**/*.png"
 
 0.5.0 (2017-07-07)
 ------------------
