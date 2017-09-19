@@ -185,37 +185,45 @@ def create_result(run, result):
     fullname = '{}.{}'.format(result.classname, result.methodname)
 
     testcase_url = get_or_create_testcase(name, fullname, run['product'])
-    client_url = get_or_create_client()
-    duration = result.time.total_seconds()
-    outcome = outcome_map[result.result]
-    stdout = result.stdout
+    data = generate_result_data(result, run, testcase_url)
+    result_obj = client.post(API.result, data=data)
+    return result_obj['url']
 
-    data = {'test_run': run['url'], 'testcase': testcase_url,
-            'duration': duration, 'outcome': outcome,
-            'assigned_to': run['owner'], 'test_client': client_url,
+
+def generate_result_data(xml_result_obj, run_obj, test_case_url):
+    """generate result data in one place."""
+    duration = xml_result_obj.time.total_seconds()
+    outcome = outcome_map[xml_result_obj.result]
+    stdout = xml_result_obj.stdout
+
+    data = {'test_run': run_obj['url'],
+            'testcase': test_case_url,
+            'duration': duration,
+            'outcome': outcome,
+            'assigned_to': run_obj['owner'],
+            'test_client': get_or_create_client(),
             'stdout': stdout}
 
     # success / skipped / error / failure
-    if result.result in ('failure', 'error'):
+    if xml_result_obj.result in ('failure', 'error'):
 
-        error_info = {'stdout': result.stdout,
-                      'stderr': result.stderr,
-                      'message': result.message,
-                      'stacktrace': result.trace,
-                      'exception_type': 'UnDetermined'
+        error_info = {'stdout': xml_result_obj.stdout,
+                      'stderr': xml_result_obj.stderr,
+                      'message': xml_result_obj.message,
+                      'stacktrace': xml_result_obj.trace,
+                      'exception_type': 'Undetermined'
                       }
 
-        if getattr(result, 'failureException'):
-            error_info['exception_type'] = result.failureException.__name__
+        if getattr(xml_result_obj, 'failureException'):
+            error_info['exception_type'] = xml_result_obj.failureException.__name__
 
         error_url = create_error(error_info)
         data['error'] = error_url
 
-    elif result.result == 'skipped':
-        data['stdout'] = result.alltext
+    elif xml_result_obj.result == 'skipped':
+        data['stdout'] = xml_result_obj.alltext
 
-    result_obj = client.post(API.result, data=data)
-    return result_obj['url']
+    return data
 
 
 def create_error(error_info):
@@ -223,8 +231,34 @@ def create_error(error_info):
     return err['url']
 
 
-def rerun_result(old_result_id, result):
-    pass
+@log_params
+def rerun_result(result_id, result_xml_pattern):
+    """to rerun a result by id and xml file pattern."""
+    logging.info("Rerun result by id: {}".format(result_id))
+
+    result_url = '{}api/{}/{}/'.format(config['server'], API.result, result_id)
+    result = client.get_obj(result_url)
+
+    run = client.get_obj(result['test_run'])
+    case = client.get_obj(result['testcase'])
+
+    # save result run as current run
+    config['current_run'] = run
+    save_config()
+
+    files = get_files(result_xml_pattern)
+    found = [r for r in get_results(files)[0] if r.methodname == case['name']]
+
+    if found:
+        data = generate_result_data(xml_result_obj=found[0],
+                                    run_obj=run,
+                                    test_case_url=result['testcase'])
+        data['is_rerun'] = True
+        client.put(result_url, data=data)
+        logging.info('Done.')
+        return
+
+    logging.warning("No matched result file found.")
 
 
 def add_run_source(run_url):
