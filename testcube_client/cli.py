@@ -45,6 +45,8 @@ parser.add_argument('-start', '--start-run',
 parser.add_argument('-finish', '--finish-run',
                     help='Finish a run, require xunit files.',
                     action='store_true')
+parser.add_argument('-reset', '--rerun-result',
+                    help='Rerun a result by id, require xunit files.')
 parser.add_argument('-x', '--xunit-files',
                     help='Specify the xunit xml results, e.g "**/result*.xml"')
 parser.add_argument('-i', '--result-files',
@@ -132,6 +134,16 @@ def main():
             return -1
 
         action(business.finish_run,
+               result_xml_pattern=args.xunit_files)
+
+    # when reset a result
+    elif args.rerun_result:
+        if not args.xunit_files:
+            logging.error('Must specify --xunit-files!')
+            return -1
+
+        action(business.rerun_result,
+               result_id=args.rerun_result,
                result_xml_pattern=args.xunit_files)
 
     # when user need to upload result files: --result-files
