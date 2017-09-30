@@ -54,7 +54,7 @@ first choice is calling ``--start-run`` at the beginning and calling ``--finish-
   # call --finish-run after run finished
    testcube-client --finish-run --xunit-files "**/results/*.xml"
 
-In this way, TestCube will record the **exact** ``start_time`` and ``end_time`` for the run.
+In this way, TestCube will record the **exact** ``start_time`` and ``end_time`` for the run. You should provide ``team`` and ``product`` name when start the run.
 
 Another choice is using ``--run`` command to upload test results like a batch.::
 
@@ -62,7 +62,7 @@ Another choice is using ``--run`` command to upload test results like a batch.::
   testcube-client --run -n "smoke tests for testcube" -t XPower -p TestCube -v v1.0 -x "**/smoke*.xml"
 
 With this choice, TestCube will use current time as ``end_time`` for the run, and guess ``start_time``
-according to run duration.
+according to run duration. ``team`` and ``product`` name are also required.
 
 Upload Result Files
 ~~~~~~~~~~~~~~~~~~~
@@ -76,8 +76,8 @@ when analyze test failure, so we can upload them to TestCube as well::
   # use -i as a shortcut
   test-cube -i "**/*.jpg"
 
-Note: your result file should contains test case name so that TestCube can link these to a result,
-e.g. if your test case name is "test_student_login", then the result file should like "test_student_login_failed.png".
+Note: your result file should contains test case name so that TestCube can link them to a result,
+e.g. if your test case name is "test_student_login", then the result file should look like "test_student_login_failed.png".
 
 Command-line Options
 ~~~~~~~~~~~~~~~~~~~~
