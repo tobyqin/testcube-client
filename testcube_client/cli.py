@@ -46,7 +46,8 @@ parser.add_argument('-finish', '--finish-run',
                     help='Finish a run, require xunit files.',
                     action='store_true')
 parser.add_argument('-task', '--handle-task',
-                    help='Handler pending task one by one.')
+                    help='Handler pending task one by one.',
+                    action='store_true')
 parser.add_argument('-reset', '--reset-result',
                     help='Reset a result by reset_id, require xunit files.')
 parser.add_argument('-x', '--xunit-files',
