@@ -141,7 +141,7 @@ def main():
 
     # when handle pending task
     elif args.handle_task:
-        action(business.handle_task())
+        action(business.handle_task)
 
     # when reset a result
     elif args.rerun_result:
