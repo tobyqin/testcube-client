@@ -2,10 +2,13 @@
 History
 =======
 
-0.6.2 (2017-09-19)
+0.7.0 (2017-10-25)
 ------------------
-* Able to rerun a result by id, for example:
-* testcube-client --rerun-result 12345 -x "**/*.xml"
+* Support server version v1.2
+* Able to handle pending task, for example:
+* testcube-client --handle-task
+* Able to rerun a result by reset id, for example:
+* testcube-client --reset-result 12345 -x "**/*.xml"
 
 0.6.0 (2017-09-07)
 ------------------

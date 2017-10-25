@@ -1,3 +1,5 @@
+import requests
+
 from . import request_client as client
 from .result_parser import get_results, get_files
 from .settings import API, save_config, get_cache, add_cache
@@ -185,22 +187,22 @@ def create_result(run, result):
     fullname = '{}.{}'.format(result.classname, result.methodname)
 
     testcase_url = get_or_create_testcase(name, fullname, run['product'])
-    data = generate_result_data(result, run, testcase_url)
+    data = generate_result_data(result, testcase_url)
+    data['test_run'], data['assigned_to'] = run['url'], run['owner']
+
     result_obj = client.post(API.result, data=data)
     return result_obj['url']
 
 
-def generate_result_data(xml_result_obj, run_obj, test_case_url):
+def generate_result_data(xml_result_obj, test_case_url, add_new_error=True):
     """generate result data in one place."""
     duration = xml_result_obj.time.total_seconds()
     outcome = outcome_map[xml_result_obj.result]
     stdout = xml_result_obj.stdout
 
-    data = {'test_run': run_obj['url'],
-            'testcase': test_case_url,
+    data = {'testcase': test_case_url,
             'duration': duration,
             'outcome': outcome,
-            'assigned_to': run_obj['owner'],
             'test_client': get_or_create_client(),
             'stdout': stdout}
 
@@ -217,8 +219,11 @@ def generate_result_data(xml_result_obj, run_obj, test_case_url):
         if getattr(xml_result_obj, 'failureException'):
             error_info['exception_type'] = xml_result_obj.failureException.__name__
 
-        error_url = create_error(error_info)
-        data['error'] = error_url
+        if add_new_error:
+            error_url = create_error(error_info)
+            data['error'] = error_url
+        else:
+            data.update(error_info)
 
     elif xml_result_obj.result == 'skipped':
         data['stdout'] = xml_result_obj.alltext
@@ -232,29 +237,35 @@ def create_error(error_info):
 
 
 @log_params
-def rerun_result(result_id, result_xml_pattern):
-    """to rerun a result by id and xml file pattern."""
-    logging.info("Rerun result by id: {}".format(result_id))
+def reset_result(reset_id, result_xml_pattern):
+    """
+    reset a result by reset id and xml file pattern.
+    1. get result id by reset object
+    2. get testcase name from result object
+    3. search testcase from provided xml results
+    4. upload matched result to reset object
+    """
+    logging.info("Reset result by reset id: {}".format(reset_id))
 
-    result_url = '{}api/{}/{}/'.format(config['server'], API.result, result_id)
-    result = client.get_obj(result_url)
-
-    run = client.get_obj(result['test_run'])
+    reset_url = '{}api/{}/{}/'.format(config['server'], API.reset_result, reset_id)
+    reset = client.get_obj(reset_url)
+    result = client.get_obj(reset['origin_result'])
     case = client.get_obj(result['testcase'])
-
-    # save result run as current run
-    config['current_run'] = run
-    save_config()
 
     files = get_files(result_xml_pattern)
     found = [r for r in get_results(files)[0] if r.methodname == case['name']]
 
     if found:
         data = generate_result_data(xml_result_obj=found[0],
-                                    run_obj=run,
-                                    test_case_url=result['testcase'])
-        data['is_rerun'] = True
-        client.put(result_url, data=data)
+                                    test_case_url=result['testcase'],
+                                    add_new_error=False)
+
+        data['run_on'] = arrow.utcnow().format()
+        data['test_client'] = get_object_id(data['test_client'])
+
+        handler_url = '{}/{}/handler'.format(API.reset_result, get_object_id(reset['url']))
+        response = client.post(handler_url, data=data)
+        logging.info(response)
         logging.info('Done.')
         return
 
@@ -295,3 +306,34 @@ def upload_result_file(file_path, run_url):
         return file['url']
     else:
         logging.warning('File skipped: {}'.format(file_path))
+
+
+def handle_task():
+    """get and handle pending task one by one."""
+    pending_task_api = '{}api/{}/pending'.format(config['server'], API.task)
+    pending_task = client.get_obj(pending_task_api)
+
+    if not pending_task:
+        logging.info('No pending task found, goodbye.')
+        return
+
+    logging.info('Found pending task: {}, data: {}'.format(
+        pending_task['description'], pending_task['data']))
+
+    logging.info('Process command: {}'.format(pending_task['command']))
+    data = {'status': 'Sent'}
+
+    try:
+        response = requests.get(pending_task['command'])
+
+        if response.status_code < 200 or response.status_code > 210:
+            data['message'] = response.text
+
+    except Exception as e:
+        logging.exception('Failed to process task!')
+        data['status'] = 'Error'
+        data['message'] = '{}: {}'.format(type(e).__name__, e.args)
+
+    logging.info('Upload data: {}'.format(data))
+    task_handler_api = '{}/{}/handler'.format(API.task, get_object_id(pending_task['url']))
+    client.post(task_handler_api, data=data)

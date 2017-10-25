@@ -123,13 +123,16 @@ class TestCases(unittest.TestCase):
 
         business.upload_files('*.png')
 
+    def test_handle_task(self):
+        business.handle_task()
+
     def test_rerun_result(self):
         business.start_run(team_name='Core',
                            product_name='TestCube',
                            run_name='my unit test run')
 
         business.finish_run('re*.xml')
-        business.rerun_result(1, '*.xml')
+        business.reset_result(1, '*.xml')
 
 
 if __name__ == '__main__':

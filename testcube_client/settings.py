@@ -111,3 +111,5 @@ class API:
     error = 'errors'
     object_source = 'object_sources'
     result_file = 'result_files'
+    reset_result = 'reset_results'
+    task = 'tasks'
