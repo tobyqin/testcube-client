@@ -252,6 +252,8 @@ def reset_result(reset_id, result_xml_pattern):
     result = client.get_obj(reset['origin_result'])
     case = client.get_obj(result['testcase'])
 
+    logging.info("Original Result: {}".format(get_result_url(result)))
+
     files = get_files(result_xml_pattern)
     found = [r for r in get_results(files)[0] if r.methodname == case['name']]
 

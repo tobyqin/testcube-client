@@ -31,6 +31,10 @@ def get_run_url(run_obj):
     return run_obj['url'].replace('api/', '')[0:-1]
 
 
+def get_result_url(result_obj):
+    """same logic to get result rul."""
+    return get_run_url(result_obj)
+
 def log_params(func):
     """decorator to debug a function params"""
 
