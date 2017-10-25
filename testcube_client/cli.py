@@ -144,13 +144,13 @@ def main():
         action(business.handle_task)
 
     # when reset a result
-    elif args.rerun_result:
+    elif args.reset_result:
         if not args.xunit_files:
             logging.error('Must specify --xunit-files!')
             return -1
 
         action(business.reset_result,
-               reset_id=args.rerun_result,
+               reset_id=args.reset_result,
                result_xml_pattern=args.xunit_files)
 
     # when user need to upload result files: --result-files

@@ -126,7 +126,7 @@ class TestCases(unittest.TestCase):
     def test_handle_task(self):
         business.handle_task()
 
-    def test_rerun_result(self):
+    def test_reset_result(self):
         business.start_run(team_name='Core',
                            product_name='TestCube',
                            run_name='my unit test run')
