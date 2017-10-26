@@ -250,9 +250,14 @@ def reset_result(reset_id, result_xml_pattern):
     reset_url = '{}api/{}/{}/'.format(config['server'], API.reset_result, reset_id)
     reset = client.get_obj(reset_url)
     result = client.get_obj(reset['origin_result'])
+    run = client.get_obj(result['test_run'])
     case = client.get_obj(result['testcase'])
 
     logging.info("Original Result: {}".format(get_result_url(result)))
+
+    # save result run as current run, so user can upload images to correct run
+    config['current_run'] = run
+    save_config()
 
     files = get_files(result_xml_pattern)
     found = [r for r in get_results(files)[0] if r.methodname == case['name']]
