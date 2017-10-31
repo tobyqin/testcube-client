@@ -2,6 +2,11 @@
 History
 =======
 
+0.7.6 (2017-10-31)
+------------------
+* Support server version v1.3
+* Save environment variables to server when start a run, use for result reset
+
 0.7.0 (2017-10-25)
 ------------------
 * Support server version v1.2

@@ -113,3 +113,4 @@ class API:
     result_file = 'result_files'
     reset_result = 'reset_results'
     task = 'tasks'
+    run_variable = 'run_variables'

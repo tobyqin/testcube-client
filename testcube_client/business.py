@@ -60,6 +60,8 @@ def start_run(team_name, product_name, product_version=None, run_name=None, **kw
     logging.info('Start new run: {}'.format(get_run_url(run)))
 
     add_run_source(run['url'])
+    save_env_variable(run['url'])
+
     return run['url']
 
 
@@ -344,3 +346,12 @@ def handle_task():
     logging.info('Upload data: {}'.format(data))
     task_handler_api = '{}/{}/handler'.format(API.task, get_object_id(pending_task['url']))
     client.post(task_handler_api, data=data)
+
+
+def save_env_variable(run_url):
+    """save current env variables as run extra data."""
+
+    data = {'test_run': run_url, 'data': env_to_json()}
+    var = client.post(API.run_variable, data=data)
+
+    return var['url']
