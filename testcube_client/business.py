@@ -355,3 +355,11 @@ def save_env_variable(run_url):
     var = client.post(API.run_variable, data=data)
 
     return var['url']
+
+
+def cleanup_runs(days):
+    """clean up old runs after specified days."""
+    logging.info('Cleanup runs {} days ago...'.format(days))
+    data = {'days': days}
+    result = client.get(API.run + '/cleanup', params=data)
+    logging.info('Runs had been cleaned up: {}'.format(result))

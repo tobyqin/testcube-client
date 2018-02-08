@@ -94,6 +94,8 @@ The optional arguments::
   -r REGISTER, --register REGISTER
                         Register to the TestCube server, e.g.
                         http://server:8000
+  -f, --force           Force the action, support --register command.
+  -vb, --verbose        Show verbose log info.
   -run, --run           Upload run info at one time, require team,product,name
                         and xunit files.
   -start, --start-run   Start a run, require team, product and a name.
@@ -109,8 +111,11 @@ The optional arguments::
                         Specify the product name.
   -v PRODUCT_VERSION, --product-version PRODUCT_VERSION
                         Specify the product version. [Optional]
-  -f, --force           Force the action, support --register command.
-  -vb, --verbose        Show verbose log info.
-
+  -task, --handle-task  Handler pending task one by one.
+  -reset RESET_RESULT, --reset-result RESET_RESULT
+                        Reset a result by reset_id, require xunit files.
+  -cleanup, --cleanup-runs
+                        Cleanup old runs after specified days
+  -d DAYS, --days DAYS  Specify days when clean up old runs.
 
 .. _TestCube: https://github.com/tobyqin/testcube

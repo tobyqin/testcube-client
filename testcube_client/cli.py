@@ -34,8 +34,17 @@ from .settings import enable_debug_log
 
 parser = argparse.ArgumentParser(usage=__doc__)
 
+# register & config
 parser.add_argument('-r', '--register',
                     help='Register to the TestCube server, e.g. http://server:8000')
+parser.add_argument('-f', '--force',
+                    help='Force the action, support --register command.',
+                    action='store_true')
+parser.add_argument('-vb', '--verbose',
+                    help='Show verbose log info.',
+                    action='store_true')
+
+# start / finish run
 parser.add_argument('-run', '--run',
                     help='Upload run info at one time, require team,product,name and xunit files.',
                     action='store_true')
@@ -45,11 +54,6 @@ parser.add_argument('-start', '--start-run',
 parser.add_argument('-finish', '--finish-run',
                     help='Finish a run, require xunit files.',
                     action='store_true')
-parser.add_argument('-task', '--handle-task',
-                    help='Handler pending task one by one.',
-                    action='store_true')
-parser.add_argument('-reset', '--reset-result',
-                    help='Reset a result by reset_id, require xunit files.')
 parser.add_argument('-x', '--xunit-files',
                     help='Specify the xunit xml results, e.g "**/result*.xml"')
 parser.add_argument('-i', '--result-files',
@@ -62,12 +66,22 @@ parser.add_argument('-p', '--product',
                     help='Specify the product name.')
 parser.add_argument('-v', '--product-version',
                     help='Specify the product version. [Optional]')
-parser.add_argument('-f', '--force',
-                    help='Force the action, support --register command.',
+
+# handle reset tasks
+parser.add_argument('-task', '--handle-task',
+                    help='Handler pending task one by one.',
                     action='store_true')
-parser.add_argument('-vb', '--verbose',
-                    help='Show verbose log info.',
+
+# process reset task
+parser.add_argument('-reset', '--reset-result',
+                    help='Reset a result by reset_id, require xunit files.')
+
+# clean up runs
+parser.add_argument('-cleanup', '--cleanup-runs',
+                    help='Cleanup old runs after specified days',
                     action='store_true')
+parser.add_argument('-d', '--days',
+                    help='Specify days when clean up old runs.')
 
 
 def action(func, *args, **kwargs):
@@ -156,6 +170,14 @@ def main():
     # when user need to upload result files: --result-files
     if args.result_files:
         action(business.upload_files, file_patterns=args.result_files)
+
+    # when user clean up old runs
+    if args.cleanup_runs:
+        if not args.days:
+            logging.error('Must specify --days!')
+            return -1
+        action(business.cleanup_runs,
+               days=args.days)
 
 
 if __name__ == "__main__":

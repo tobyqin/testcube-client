@@ -52,6 +52,9 @@ class TestCases(unittest.TestCase):
                      run_name=fake.text(100),
                      result_xml_pattern='*.xml')
 
+    def test_cleanup_runs(self):
+        business.cleanup_runs(days=60)
+
 
 if __name__ == '__main__':
     unittest.main()

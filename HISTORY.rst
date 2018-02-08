@@ -2,6 +2,11 @@
 History
 =======
 
+0.7.8 (2018-02-08)
+------------------
+* Support clean up runs after specified days
+* testcube-client --cleanup-runs days 60
+
 0.7.6 (2017-10-31)
 ------------------
 * Support server version v1.3
