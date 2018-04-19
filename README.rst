@@ -77,11 +77,13 @@ when analyze test failure, so we can upload them to TestCube as well::
   testcube-client -i "**/*.jpg"
 
 **Note:** 
+
 In order to link a file to a test result, the ``file name`` must **contains** ``test case name`` so that TestCube can map them together. 
 
 For example:
 
 test case name => "test_student_login"
+
 result file name => "test_student_login_failed.png"
 
 Command-line Options
