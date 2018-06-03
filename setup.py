@@ -3,10 +3,10 @@
 
 from setuptools import setup
 
-with open('README.rst') as readme_file:
+with open('README.md') as readme_file:
     readme = readme_file.read()
 
-with open('HISTORY.rst') as history_file:
+with open('HISTORY.md') as history_file:
     history = history_file.read()
 
 requirements = [
@@ -20,6 +20,7 @@ setup(
     version='0.6.1',
     description="A Python client for testcube. (https://github.com/tobyqin/testcube)",
     long_description=readme + '\n\n' + history,
+    long_description_content_type="text/markdown",
     author="Toby Qin",
     author_email='toby.qin@live.com',
     url='https://github.com/tobyqin/testcube-client',
