@@ -1,3 +1,5 @@
+import requests
+
 from . import request_client as client
 from .result_parser import get_results, get_files
 from .settings import API, save_config, get_cache, add_cache
@@ -58,6 +60,8 @@ def start_run(team_name, product_name, product_version=None, run_name=None, **kw
     logging.info('Start new run: {}'.format(get_run_url(run)))
 
     add_run_source(run['url'])
+    save_env_variable(run['url'])
+
     return run['url']
 
 
@@ -185,37 +189,48 @@ def create_result(run, result):
     fullname = '{}.{}'.format(result.classname, result.methodname)
 
     testcase_url = get_or_create_testcase(name, fullname, run['product'])
-    client_url = get_or_create_client()
-    duration = result.time.total_seconds()
-    outcome = outcome_map[result.result]
-    stdout = result.stdout
-
-    data = {'test_run': run['url'], 'testcase': testcase_url,
-            'duration': duration, 'outcome': outcome,
-            'assigned_to': run['owner'], 'test_client': client_url,
-            'stdout': stdout}
-
-    # success / skipped / error / failure
-    if result.result in ('failure', 'error'):
-
-        error_info = {'stdout': result.stdout,
-                      'stderr': result.stderr,
-                      'message': result.message,
-                      'stacktrace': result.trace,
-                      'exception_type': 'UnDetermined'
-                      }
-
-        if getattr(result, 'failureException'):
-            error_info['exception_type'] = result.failureException.__name__
-
-        error_url = create_error(error_info)
-        data['error'] = error_url
-
-    elif result.result == 'skipped':
-        data['stdout'] = result.alltext
+    data = generate_result_data(result, testcase_url)
+    data['test_run'], data['assigned_to'] = run['url'], run['owner']
 
     result_obj = client.post(API.result, data=data)
     return result_obj['url']
+
+
+def generate_result_data(xml_result_obj, test_case_url, add_new_error=True):
+    """generate result data in one place."""
+    duration = xml_result_obj.time.total_seconds()
+    outcome = outcome_map[xml_result_obj.result]
+    stdout = xml_result_obj.stdout
+
+    data = {'testcase': test_case_url,
+            'duration': duration,
+            'outcome': outcome,
+            'test_client': get_or_create_client(),
+            'stdout': stdout}
+
+    # success / skipped / error / failure
+    if xml_result_obj.result in ('failure', 'error'):
+
+        error_info = {'stdout': xml_result_obj.stdout,
+                      'stderr': xml_result_obj.stderr,
+                      'message': xml_result_obj.message,
+                      'stacktrace': xml_result_obj.trace,
+                      'exception_type': 'Undetermined'
+                      }
+
+        if getattr(xml_result_obj, 'failureException'):
+            error_info['exception_type'] = xml_result_obj.failureException.__name__
+
+        if add_new_error:
+            error_url = create_error(error_info)
+            data['error'] = error_url
+        else:
+            data.update(error_info)
+
+    elif xml_result_obj.result == 'skipped':
+        data['stdout'] = xml_result_obj.alltext
+
+    return data
 
 
 def create_error(error_info):
@@ -223,8 +238,47 @@ def create_error(error_info):
     return err['url']
 
 
-def rerun_result(old_result_id, result):
-    pass
+@log_params
+def reset_result(reset_id, result_xml_pattern):
+    """
+    reset a result by reset id and xml file pattern.
+    1. get result id by reset object
+    2. get testcase name from result object
+    3. search testcase from provided xml results
+    4. upload matched result to reset object
+    """
+    logging.info("Reset result by reset id: {}".format(reset_id))
+
+    reset_url = '{}api/{}/{}/'.format(config['server'], API.reset_result, reset_id)
+    reset = client.get_obj(reset_url)
+    result = client.get_obj(reset['origin_result'])
+    run = client.get_obj(result['test_run'])
+    case = client.get_obj(result['testcase'])
+
+    logging.info("Original Result: {}".format(get_result_url(result)))
+
+    # save result run as current run, so user can upload images to correct run
+    config['current_run'] = run
+    save_config()
+
+    files = get_files(result_xml_pattern)
+    found = [r for r in get_results(files)[0] if r.methodname == case['name']]
+
+    if found:
+        data = generate_result_data(xml_result_obj=found[0],
+                                    test_case_url=result['testcase'],
+                                    add_new_error=False)
+
+        data['run_on'] = arrow.utcnow().format()
+        data['test_client'] = get_object_id(data['test_client'])
+
+        handler_url = '{}/{}/handler'.format(API.reset_result, get_object_id(reset['url']))
+        response = client.post(handler_url, data=data)
+        logging.info(response)
+        logging.info('Done.')
+        return
+
+    logging.warning("No matched result file found.")
 
 
 def add_run_source(run_url):
@@ -261,3 +315,51 @@ def upload_result_file(file_path, run_url):
         return file['url']
     else:
         logging.warning('File skipped: {}'.format(file_path))
+
+
+def handle_task():
+    """get and handle pending task one by one."""
+    pending_task_api = '{}api/{}/pending'.format(config['server'], API.task)
+    pending_task = client.get_obj(pending_task_api)
+
+    if not pending_task:
+        logging.info('No pending task found, goodbye.')
+        return
+
+    logging.info('Found pending task: {}, data: {}'.format(
+        pending_task['description'], pending_task['data']))
+
+    logging.info('Process command: {}'.format(pending_task['command']))
+    data = {'status': 'Sent'}
+
+    try:
+        response = requests.get(pending_task['command'])
+
+        if response.status_code < 200 or response.status_code > 210:
+            data['message'] = response.text
+
+    except Exception as e:
+        logging.exception('Failed to process task!')
+        data['status'] = 'Error'
+        data['message'] = '{}: {}'.format(type(e).__name__, e.args)
+
+    logging.info('Upload data: {}'.format(data))
+    task_handler_api = '{}/{}/handler'.format(API.task, get_object_id(pending_task['url']))
+    client.post(task_handler_api, data=data)
+
+
+def save_env_variable(run_url):
+    """save current env variables as run extra data."""
+
+    data = {'test_run': run_url, 'data': env_to_json()}
+    var = client.post(API.run_variable, data=data)
+
+    return var['url']
+
+
+def cleanup_runs(days):
+    """clean up old runs after specified days."""
+    logging.info('Cleanup runs {} days ago...'.format(days))
+    data = {'days': days}
+    result = client.get(API.run + '/cleanup', params=data)
+    logging.info('Runs had been cleaned up: {}'.format(result))

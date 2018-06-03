@@ -2,9 +2,28 @@
 History
 =======
 
+0.7.8 (2018-02-08)
+------------------
+* Support clean up runs after specified days
+* testcube-client --cleanup-runs days 60
+
+0.7.6 (2017-10-31)
+------------------
+* Support server version v1.3
+* Save environment variables to server when start a run, use for result reset
+
+0.7.0 (2017-10-25)
+------------------
+* Support server version v1.2
+* Able to handle pending task, for example:
+* testcube-client --handle-task
+* Able to rerun a result by reset id, for example:
+* testcube-client --reset-result 12345 -x "**/*.xml"
+
 0.6.0 (2017-09-07)
 ------------------
 * Able to upload result files using argument --result-files
+* testcube-client --result-files "**/*.png"
 
 0.5.0 (2017-07-07)
 ------------------

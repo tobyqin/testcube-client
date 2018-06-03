@@ -87,7 +87,7 @@ class TestCases(unittest.TestCase):
         try:
             client.delete(deleted_team['url'])
         except ValueError as e:
-            logging.warn('cannot deleted twice! ' + str(e))
+            logging.warning('cannot deleted twice! ' + str(e))
 
 
 if __name__ == '__main__':

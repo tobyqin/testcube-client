@@ -1,3 +1,4 @@
+import json
 import logging
 from os import environ
 from os.path import basename, getsize, getmtime, splitext, exists
@@ -5,6 +6,11 @@ from os.path import basename, getsize, getmtime, splitext, exists
 import arrow
 
 from .settings import config
+
+
+def env_to_json():
+    """convert current env variables to json text."""
+    return json.dumps(dict(environ))
 
 
 def get_default_run_name():
@@ -29,6 +35,11 @@ def get_object_id(object_url):
 def get_run_url(run_obj):
     """ 'http://../api/runs/123/' => http://.../runs/123"""
     return run_obj['url'].replace('api/', '')[0:-1]
+
+
+def get_result_url(result_obj):
+    """same logic to get result rul."""
+    return get_run_url(result_obj)
 
 
 def log_params(func):

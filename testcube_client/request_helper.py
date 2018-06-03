@@ -81,6 +81,9 @@ def api_result(response, as_json=True):
 
     if as_json:
         try:
+            if not response.text:
+                return None
+
             return response.json()
         except ValueError:
             return obj_moved(response)

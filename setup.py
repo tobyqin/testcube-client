@@ -17,7 +17,7 @@ requirements = [
 
 setup(
     name='testcube-client',
-    version='0.6.1',
+    version='0.7.8',
     description="A Python client for testcube. (https://github.com/tobyqin/testcube)",
     long_description=readme + '\n\n' + history,
     long_description_content_type="text/markdown",
@@ -40,7 +40,7 @@ setup(
     zip_safe=False,
     keywords='testcube, testcube-client, test platform, test client',
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
