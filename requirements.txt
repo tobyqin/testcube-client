@@ -8,5 +8,5 @@ PyYAML
 requests
 pytest
 glob2
-arrow
+arrow==0.12.1
 faker
