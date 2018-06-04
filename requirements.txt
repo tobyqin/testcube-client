@@ -9,4 +9,4 @@ requests
 pytest
 glob2
 arrow
-faker
+faker==0.8.15
