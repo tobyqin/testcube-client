@@ -4,7 +4,7 @@ tox
 coverage
 Sphinx
 cryptography
-PyYAML
+PyYAML==3.12
 requests
 pytest
 glob2
