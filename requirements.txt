@@ -1,5 +1,5 @@
 bumpversion
-flake8
+flake8==3.5.0
 tox
 coverage
 Sphinx
