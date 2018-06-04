@@ -7,6 +7,6 @@ cryptography
 PyYAML
 requests
 pytest
-glob2
+glob2==0.6
 arrow
 faker
