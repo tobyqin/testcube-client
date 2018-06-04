@@ -5,7 +5,7 @@ coverage
 Sphinx
 cryptography
 PyYAML
-requests
+requests==2.18.4
 pytest
 glob2
 arrow
