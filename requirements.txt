@@ -8,5 +8,5 @@ PyYAML
 requests
 pytest
 glob2==0.6
-arrow
-faker
+arrow==0.12.1
+faker==0.8.15
