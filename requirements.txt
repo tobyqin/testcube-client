@@ -10,3 +10,4 @@ pytest
 glob2
 arrow==0.12.1
 faker
+faker==0.8.15
