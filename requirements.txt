@@ -6,7 +6,7 @@ Sphinx
 cryptography
 PyYAML
 requests
-pytest==3.6.0
+pytest==3.6.1
 pytest
 glob2==0.6
 arrow==0.12.1
