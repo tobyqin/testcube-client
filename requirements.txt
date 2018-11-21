@@ -4,9 +4,9 @@ tox
 coverage
 Sphinx
 cryptography
-PyYAML==4.1
-requests==2.19.1
-pytest==3.6.2
-glob2==0.6
-arrow==0.12.1
-faker==0.8.16
+PyYAML
+pytest
+glob2>=0.6
+arrow>=0.12.1
+faker>=1.0.0
+requests>=2.20.0
