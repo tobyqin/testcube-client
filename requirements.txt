@@ -5,7 +5,7 @@ coverage
 Sphinx
 cryptography
 PyYAML
-pytest
+pytest==5.3.3
 glob2>=0.6
 arrow>=0.12.1
 faker>=1.0.0
