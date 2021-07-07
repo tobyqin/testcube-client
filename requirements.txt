@@ -2,7 +2,7 @@ bumpversion
 flake8
 tox
 coverage
-Sphinx
+Sphinx==4.0.3
 cryptography
 PyYAML
 pytest
