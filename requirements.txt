@@ -1,7 +1,7 @@
 bumpversion
 flake8
 tox
-coverage
+coverage==6.5.0
 Sphinx
 cryptography
 PyYAML
