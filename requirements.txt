@@ -1,6 +1,6 @@
 bumpversion
 flake8
-tox
+tox==4.2.2
 coverage
 Sphinx
 cryptography
